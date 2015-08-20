@@ -1,0 +1,7 @@
+node_modules
+.idea/
+*.sublime-*
+.DS_Store
+Thumbs.db
+img/**/*.jpg
+video/**/*.mp4
