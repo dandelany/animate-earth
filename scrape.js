@@ -10,17 +10,23 @@ const throttledRequest = require('throttled-request')(request);
 
 const baseUrl = 'http://rammb.cira.colostate.edu/ramsdis/online/';
 const indexPage = 'archive_hi_res.asp?data_folder=himawari-8/full_disk_ahi_true_color';
-const savePath = 'img/full-disk-true-color/';
-const resolution = 'low';
-const sleepSeconds = 5;
-const limit = 500;
+//const savePath = 'img/full-disk-true-color/';
+const savePath = '/Volumes/Galactica/earth/img/full-disk-true-color/';
+const resolution = 'high';
+const sleepSeconds = 9;
+const limit = 600;
 
+let timers = {};
 throttledRequest.configure({requests: 1, milliseconds: sleepSeconds * 1000});
-console.log('checking rammb.cira.colostate for ' + resolution + ' resolution image URLs...');
+throttledRequest.on('request', function(url) {
+    console.log(`requesting ${fileNameFromUrl(url)}`);
+    timers[url] = new Date().getTime();
+});
 
+console.log('checking rammb.cira.colostate for ' + resolution + ' resolution image URLs...');
 request(baseUrl + indexPage, (error, response, body) => {
     let imgUrls = getImgUrls(body);
-    console.log(imgUrls.length + " image URLs found");
+    console.log(`${imgUrls.length} image URLs found`);
     console.log(imgUrls.filter(fileExistsForUrl).length + " of " + imgUrls.length + " already downloaded");
     console.log("limited to first " + limit + " images");
 
@@ -37,13 +43,14 @@ request(baseUrl + indexPage, (error, response, body) => {
 
     let savedCount = 0;
     newImgUrls.forEach((url, i) => {
-        //console.log("downloading " + i + " of " + newImgUrls.length + ": " + url);
         download(
             url,
             makeSavePath(fileNameFromUrl(url)),
-            () => {
+            (timer) => {
+                const started = _.has(timers, url) ? timers[url] : null;
+                const timeTaken = started ? ((new Date().getTime() - started) / 1000).toFixed(2) : "??";
                 savedCount++;
-                console.log("saved " + savedCount + " of " + newImgUrls.length + ": " + fileNameFromUrl(url))
+                console.log(`saved ${savedCount} of ${newImgUrls.length} in ${timeTaken}s : ${fileNameFromUrl(url)}`)
             }
         );
     });
@@ -66,5 +73,6 @@ function makeAbsoluteUrl(url) { return baseUrl + url; }
 function fileNameFromUrl(url) { return _.last(url.split('/')); }
 
 function download(url, filename, callback=_.noop) {
-    throttledRequest(url).pipe(fs.createWriteStream(filename)).on('close', callback);
+    let timer = new Date().getTime();
+    throttledRequest(url).pipe(fs.createWriteStream(filename)).on('close', _.partial(callback, timer));
 }

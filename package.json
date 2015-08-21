@@ -7,13 +7,15 @@
   "main": "index.js",
   "scripts": {
     "scrape": "babel-node scrape.js",
-    "makevideo": "ffmpeg -framerate 30 -pattern_type glob -i 'img/full-disk-true-color/low/*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p video/video.mp4",
-    "interpolate": "butterflow -s full,spd=0.075 -o video/video_smooth.mp4 video/video.mp4"
+    "makevideo": "ffmpeg -framerate 30 -pattern_type glob -i '/Volumes/Galactica/earth/img/full-disk-true-color/cropped/*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p video/video.mp4",
+    "interpolate": "butterflow -s full,spd=0.1 -o video/video_smooth.mp4 video/video.mp4"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
     "cheerio": "^0.19.0",
     "file-exists": "^0.1.1",
+    "glob": "^5.0.14",
+    "jimp": "^0.2.4",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "request": "^2.61.0",
