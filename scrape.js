@@ -14,7 +14,7 @@ const indexPage = 'archive_hi_res.asp?data_folder=himawari-8/full_disk_ahi_true_
 const savePath = '/Volumes/Galactica/earth/img/full-disk-true-color/';
 const resolution = 'high';
 const sleepSeconds = 9;
-const limit = 600;
+const limit = 1700;
 
 let timers = {};
 throttledRequest.configure({requests: 1, milliseconds: sleepSeconds * 1000});
