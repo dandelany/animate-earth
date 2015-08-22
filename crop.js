@@ -6,8 +6,8 @@ import sys from 'sys';
 const exec = require('child_process').exec;
 
 
-const imgPath = '/Volumes/Galactica/earth/img/full-disk-true-color/high/';
-const outPath = '/Volumes/Galactica/earth/img/full-disk-true-color/cropped/';
+const imgPath = '/media/dan/Galactica/earth/img/full-disk-true-color/high/';
+const outPath = '/media/dan/Galactica/earth/img/full-disk-true-color/crop2/';
 
 glob(`${imgPath}/*.jpg`, {}, function (err, files) {
     const commands = files.map(function(path) {

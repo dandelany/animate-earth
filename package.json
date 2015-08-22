@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "scrape": "babel-node scrape.js",
-    "makevideo": "ffmpeg -framerate 10 -pattern_type glob -i '/Volumes/Galactica/earth/img/full-disk-true-color/cropped/*.jpg' -c:v libx264 -r 10 -pix_fmt yuv420p video/video.mp4",
+    "makevideo": "ffmpeg -framerate 6 -pattern_type glob -i '/home/dan/Documents/repos/animate-earth/img/full-disk-true-color/crop1080/*.jpg' -c:v libx264 -r 6 -pix_fmt yuv420p video/crop1080.mp4",
     "interpolate": "butterflow -s full,spd=0.1 -o video/video_smooth.mp4 video/video.mp4"
   },
   "dependencies": {
