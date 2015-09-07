@@ -1,6 +1,18 @@
 # Animate Earth
 ### Motion interpolated videos from Himawari-8 full-disk true-color images
 
+## Dependencies
+FFmpeg, Imagemagick, and Butterflow. On a Mac, this should be as easy as:
+
+```
+brew update
+brew upgrade
+brew install ffmpeg imagemagick
+brew install homebrew/science/butterflow
+```
+
+## useful commands
+
 ```
 # make video
 ffmpeg -framerate 6 -pattern_type glob -i './img/full-disk-true-color/crop1080/*.jpg' -c:v libx264 -r 6 -pix_fmt yuv420p video/crop1080.mp4
