@@ -11,10 +11,10 @@ const throttledRequest = require('throttled-request')(request);
 const baseUrl = 'http://rammb.cira.colostate.edu/ramsdis/online/';
 const indexPage = 'archive_hi_res.asp?data_folder=himawari-8/full_disk_ahi_true_color';
 //const savePath = 'img/full-disk-true-color/';
-const savePath = '/media/dan/Galactica/earth/img/full-disk-true-color/';
+const savePath = '/Volumes/Galactica/earth/img/full-disk-true-color/';
 const resolution = 'high';
 const sleepSeconds = 9;
-const limit = 2000;
+const limit = 5000;
 
 let timers = {};
 throttledRequest.configure({requests: 1, milliseconds: sleepSeconds * 1000});

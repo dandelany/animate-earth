@@ -7,8 +7,8 @@
   "main": "index.js",
   "scripts": {
     "scrape": "babel-node scrape.js",
-    "makevideo": "ffmpeg -framerate 6 -pattern_type glob -i '/home/dan/Documents/repos/animate-earth/img/full-disk-true-color/crop1080/*.jpg' -c:v libx264 -r 6 -pix_fmt yuv420p video/crop1080.mp4",
-    "interpolate": "butterflow -s full,spd=0.1 -o video/video_smooth.mp4 video/video.mp4"
+    "makevideo": "ffmpeg -framerate 6 -pattern_type glob -i './img/full-disk-true-color/crop1080/*.jpg' -c:v libx264 -r 6 -pix_fmt yuv420p video/crop1080.mp4",
+    "interpolate": "butterflow -s full,fps=60 -o video/crop1080-60fps.mp4 video/crop1080.mp4"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
@@ -19,6 +19,7 @@
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "request": "^2.61.0",
+    "shelljs": "^0.5.3",
     "sleep": "^3.0.0",
     "superagent": "^1.3.0",
     "superagent-bluebird-promise": "^2.0.2",
