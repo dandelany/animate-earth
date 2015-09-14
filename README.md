@@ -3,12 +3,10 @@
 
 ```
 # make video
-ffmpeg -framerate 6 -pattern_type glob -i './img/full-disk-true-color/crop1080/*.jpg' -c:v libx264 -r 6 -pix_fmt yuv420p video/crop1080.mp4
-
-ffmpeg -framerate 5 -pattern_type glob -i './*.jpg' -c:v libx264 -r 5 -pix_fmt yuv420p 5fps.mp4
+ffmpeg -framerate 30 -pattern_type glob -i './*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p orig.mp4
 
 # interpolate
-butterflow -s full,spd=0.25 -r 60 -o 60fps.mp4 5fps.mp4
+butterflow -s full,spd=0.05 -r 60 -o interp.mp4 orig.mp4
 
 # gif
 ffmpeg -i 30-interp.mp4 -pix_fmt rgb24 -s 320x240 output.gif
