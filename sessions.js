@@ -7,7 +7,7 @@ import moment from 'moment';
 //const imgPath = './img/full-disk-true-color/high/';
 //const imgPath = '/media/dan/Galactica/earth/img/full-disk-true-color/high/';
 //const imgPath = '/Volumes/Galactica/earth/img/full-disk-true-color/high/';
-const imgPath = '/Volumes/Galactica/earth/img/full-disk-true-color/skiptest/crop/';
+const imgPath = '/Volumes/Galactica/earth/img/full-disk-true-color/skiptest2/img/';
 
 glob(`${imgPath}/*.jpg`, {}, function (err, files) {
     const fileMoments = files.map(_.flow(timeStrFromPath, parseTimeStr));
