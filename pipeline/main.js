@@ -15,10 +15,17 @@ const outPath = '/Volumes/Galactica/earth/output';
 // list of crop coordinates for the different cropped videos we're creating
 // format: <WIDTH>x<HEIGHT>+<XOFFSET>+<YOFFSET>
 //const cropCoords = ['800x600+2000+200', '800x600+3000+1000'];
-//const cropCoords = ['2800x1575+1100+3260']; // australia
+//const cropCoords = ['2800x1575+1100+3260']; // australia - too big...
 //const cropCoords = ['800x600+2100+4260']; // australia small part
-const cropCoords = ['1920x1080+1558+327']; // japan & korea
+
+//const cropCoords = ['800x600+1758+427', '1280x720+1758+427', '1920x1080+1558+327']; // japan & korea
 //const cropCoords = ['640x480+1958+827']; // japan & korea small part
+
+//const cropCoords = ['1920x1080+1558+327']; // #1 japan & korea
+//const cropCoords = ['1920x1080+265+1675']; // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
+const cropCoords = ['1920x1080+1558+327', '1920x1080+265+1675']; // #1 and #2
+//const cropCoords = ['400x400+1265+2175', '400x400+2265+2675']; // test crop
+
 
 
 // expected time between images, in seconds. 10 minutes for himawari-8
@@ -31,7 +38,9 @@ const maxFrameGap = 5;
 // the speed of the finished video in terms of real world seconds per video second
 // ie. (seconds of real time elapsed in images) / (seconds in final video)
 //const speed = imgInterval / 1; // 1 second of video per 10 minute image (1fps uninterpolated)
-const speed = 0.05;
+
+// speed by which to slow down the original video
+const speed = 0.666667;
 
 // fps of the intermediate uninterpolated video
 // only really matters if you plan to use it as well (ie. for comparison)
@@ -43,7 +52,7 @@ const finalFPS = 60;
 //const speed = 60 * 10;
 
 // max # of sessions to make video from, starting from most recent
-const maxSessions = 1;
+const maxSessions = 7;
 
 // get all full-res image paths
 const files = sh.ls(`${imgPath}/*.jpg`);
@@ -59,7 +68,7 @@ assert(files.length, _.reduce(sessions, (total, session) => total + session.file
 
 //console.log(sessions);
 
-const sessionsToRun = _.takeRight(sessions, 7);
+const sessionsToRun = _.takeRight(sessions, maxSessions);
 //console.log(sessionsToRun);
 
 // crop the images
@@ -87,17 +96,18 @@ sessionsToRun.forEach((session, i) => {
 
         // make video
         const videoDir = `${cropDir}/video`;
-        const origVideoPath = `${videoDir}/original-${origFPS}fps.mp4`;
+        const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
         sh.mkdir(videoDir);
         if(!sh.ls(origVideoPath).length)
             sh.exec(makeVideoCmd(imgDir, origFPS, origVideoPath));
 
-        const segments = sessionsFromFiles(session.files, imgInterval, 1);
+        //const segments = sessionsFromFiles(session.files, imgInterval, 1);
         //console.log(segments);
 
+        //session.files = sh.ls(`${imgDir}/*.jpg`);
         const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
         if(!sh.ls(interpVideoPath).length) {
-            const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, 0.5, origFPS, finalFPS);
+            const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS);
             console.log(butterflowCmd);
             sh.exec(butterflowCmd);
         }
@@ -106,12 +116,8 @@ sessionsToRun.forEach((session, i) => {
 
 function makeVideoCmd(imgDir, fps, videoPath) {
     return `ffmpeg -y -framerate ${origFPS}\ -pattern_type glob -i '${imgDir}/*.jpg'\
-            -c:v libx264 -r ${origFPS} -pix_fmt yuv420p ${videoPath}`
+            -c:v libx264 -preset ultrafast -qp 0 -r ${origFPS} -pix_fmt yuv420p ${videoPath}`
 }
-
-//console.log(gaps);
-//console.log(sessionIndices);
-//console.log(sessionIndices.map(i => niceDate(fileMoments[i]) + ' - ' + niceDate(fileMoments[i+1])));
 
 function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
     const fileMoments = files.map(_.flow(timeStrFromPath, parseTimeStr));
@@ -131,8 +137,11 @@ function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
     }
     if(last > 0 && last < fileMoments.length - 1)
         segments.push(`a=${last/inFPS},b=end,spd=${speed}`);
+    if(!segments.length)
+        segments.push(`full,spd=${speed}`);
 
-    return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    //return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    return [`butterflow -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
 }
 
 function timeStrFromPath(path) {
