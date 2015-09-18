@@ -25,6 +25,7 @@ const outPath = '/Volumes/Galactica/earth/output';
 //const cropCoords = ['1920x1080+265+1675']; // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
 const cropCoords = ['1920x1080+1558+327', '1920x1080+265+1675']; // #1 and #2
 //const cropCoords = ['400x400+1265+2175', '400x400+2265+2675']; // test crop
+//const cropCoords = ['250x250+1265+2175']; // test crop
 
 
 
@@ -41,6 +42,8 @@ const maxFrameGap = 5;
 
 // speed by which to slow down the original video
 const speed = 0.666667;
+//const speed = 1;
+
 
 // fps of the intermediate uninterpolated video
 // only really matters if you plan to use it as well (ie. for comparison)
@@ -52,7 +55,7 @@ const finalFPS = 60;
 //const speed = 60 * 10;
 
 // max # of sessions to make video from, starting from most recent
-const maxSessions = 7;
+const maxSessions = 10;
 
 // get all full-res image paths
 const files = sh.ls(`${imgPath}/*.jpg`);
@@ -68,7 +71,7 @@ assert(files.length, _.reduce(sessions, (total, session) => total + session.file
 
 //console.log(sessions);
 
-const sessionsToRun = _.takeRight(sessions, maxSessions);
+const sessionsToRun = _.takeRight(sessions, maxSessions).reverse();
 //console.log(sessionsToRun);
 
 // crop the images
@@ -98,18 +101,32 @@ sessionsToRun.forEach((session, i) => {
         const videoDir = `${cropDir}/video`;
         const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
         sh.mkdir(videoDir);
-        if(!sh.ls(origVideoPath).length)
+        if(!sh.ls(origVideoPath).length) {
+            console.log(makeVideoCmd(imgDir, origFPS, origVideoPath));
             sh.exec(makeVideoCmd(imgDir, origFPS, origVideoPath));
+        }
 
         //const segments = sessionsFromFiles(session.files, imgInterval, 1);
         //console.log(segments);
 
         //session.files = sh.ls(`${imgDir}/*.jpg`);
-        const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
+        const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
         if(!sh.ls(interpVideoPath).length) {
+            const start = new Date();
             const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS);
             console.log(butterflowCmd);
             sh.exec(butterflowCmd);
+            console.log('butterflow took ' + moment().diff(start, 'minutes', true) + ' minutes');
+        }
+
+        const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
+        if(!sh.ls(interpCompressedPath).length) {
+            const start = new Date();
+            const compressCmd = `ffmpeg -i ${interpVideoPath} ${interpCompressedPath}`;
+            console.log('compressing lossless file...');
+            console.log(compressCmd);
+            sh.exec(compressCmd);
+            console.log('compression took ' + moment().diff(start, 'minutes', true) + ' minutes');
         }
     });
 });
@@ -117,6 +134,8 @@ sessionsToRun.forEach((session, i) => {
 function makeVideoCmd(imgDir, fps, videoPath) {
     return `ffmpeg -y -framerate ${origFPS}\ -pattern_type glob -i '${imgDir}/*.jpg'\
             -c:v libx264 -preset ultrafast -qp 0 -r ${origFPS} -pix_fmt yuv420p ${videoPath}`
+    //return `ffmpeg -y -framerate ${origFPS}\ -pattern_type glob -i '${imgDir}/*.jpg'\
+    //        -c:v libx264 -r ${origFPS} -pix_fmt yuv420p ${videoPath}`
 }
 
 function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
@@ -141,7 +160,7 @@ function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
         segments.push(`full,spd=${speed}`);
 
     //return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
-    return [`butterflow -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    return [`butterflow -l -v --no-preview -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
 }
 
 function timeStrFromPath(path) {
