@@ -62,7 +62,7 @@ const finalFPS = 60;
 //const speed = 60 * 10;
 
 // max # of sessions to make video from, starting from most recent
-const maxSessions = 40;
+const maxSessions = 1;
 
 // get all full-res image paths
 const files = sh.ls(`${imgPath}/*.jpg`);
