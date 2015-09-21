@@ -5,9 +5,10 @@ import sh from 'shelljs';
 import assert from 'assert';
 
 import {
+    ensureDir, dirExists, fileExists,
     execAndLog, timeStrFromPath, parseTimeStr, niceDate,
     findGaps, makeSessions, sessionsFromFiles,
-    makeVideoCmd, makeButterflowCmd
+    makeVideoCmd, makeButterflowCmd, makeCompressVideoCmd
 } from './utils.js';
 
 import {
@@ -18,58 +19,62 @@ import {
 
 // get all full-res image paths
 const files = sh.ls(`${imgPath}/*.jpg`);
-// make dates from the image file names
-//const fileMoments = files.map(_.flow(timeStrFromPath, parseTimeStr));
 // look for gaps in the dates > the expected interval
-//const gaps = findGaps(fileMoments, imgInterval);
 // split files into sessions wherever gaps are > maxFrameGap
 // mostly happens at night between local days (data source is missing ~8 hrs of data / day)
-//const sessions = makeSessions(files, gaps, maxFrameGap);
 const sessions = sessionsFromFiles(files, imgInterval, maxFrameGap);
 assert(files.length, _.reduce(sessions, (total, session) => total + session.files.length, 0));
 
-const sessionsToRun = _.takeRight(sessions, maxSessions).reverse();
+const sessionsToRun = _.take(sessions.reverse(), maxSessions);
 
-// crop the images
 sessionsToRun.forEach((session, i) => {
     const dirName = `${timeStrFromPath(_.first(session.files))}-${timeStrFromPath(_.last(session.files))}`;
-    const dirPath = `${outPath}/${dirName}`;
-    sh.mkdir(dirPath);
+    const sessionDir = `${outPath}/${dirName}`;
+    ensureDir(sessionDir);
 
     cropCoords.forEach((cropCoord, j) => {
-        const cropDir = `${dirPath}/${cropCoord}`;
-        sh.mkdir(cropDir);
+        const cropDir = `${sessionDir}/${cropCoord}`;
+        const imgDir = `${cropDir}/img`;
+        const videoDir = `${cropDir}/video`;
+        const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
+        const origCompressedPath = `${videoDir}/original-${origFPS}fps.mp4`;
+        const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
+        const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
+
+        ensureDir(cropDir);
+        if(fileExists(interpCompressedPath)) return;
 
         // make cropped images
-        const imgDir = `${cropDir}/img`;
-        sh.mkdir(imgDir);
+        ensureDir(imgDir);
         session.files.forEach((file, k) => {
             const croppedPath = `${imgDir}/${timeStrFromPath(file)}.jpg`;
-            if(sh.ls(croppedPath).length) return; // don't redo crops
+            if(fileExists(croppedPath)) return; // don't redo crops
             console.log(`cropping session ${i+1} of ${sessionsToRun.length}, crop ${j+1} of ${cropCoords.length}, ` +
                 `file ${k+1} of ${session.files.length}, ${croppedPath}`);
             execAndLog(`convert '${file}' -crop ${cropCoord} '${croppedPath}'`);
         });
 
-        // make video
-        const videoDir = `${cropDir}/video`;
-        const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
-        sh.mkdir(videoDir);
-        if(!sh.ls(origVideoPath).length) {
-            execAndLog(makeVideoCmd(imgDir, origFPS, origVideoPath), true, 'original video');
-        }
+        // make original lossless video from frames
+        ensureDir(videoDir);
+        if(fileExists(origVideoPath)) sh.rm(origVideoPath);
+        execAndLog(makeVideoCmd(imgDir, origFPS, origVideoPath), true, 'original video');
 
-        const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
-        if(!sh.ls(interpVideoPath).length) {
-            const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS);
-            execAndLog(butterflowCmd, true, 'butterflow');
-        }
+        // use butterflow to interpolate original video to smooth lossless video
+        if(fileExists(interpVideoPath)) sh.rm(interpVideoPath);
+        const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS);
+        execAndLog(butterflowCmd, true, 'butterflow');
 
-        const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
-        if(!sh.ls(interpCompressedPath).length) {
-            const compressCmd = `ffmpeg -i ${interpVideoPath} ${interpCompressedPath}`;
-            console.log('compressing lossless file...');
-            execAndLog(compressCmd, true, 'compression');
-        }
+        // compress/encode the interpolated video
+        execAndLog(makeCompressVideoCmd(interpVideoPath, interpCompressedPath), true, 'compression');
+        // compress/encode the original video
+        if(fileExists(origCompressedPath)) sh.rm(origCompressedPath);
+        execAndLog(makeCompressVideoCmd(origVideoPath, origCompressedPath), true, 'compression');
+
+        // delete the original images and lossless video files since we're done with them
+        // only save compressed videos because images & lossless files are too big
+        console.log('removing images & lossless files...')
+        sh.rm('-rf', imgDir);
+        sh.rm(origVideoPath);
+        sh.rm(interpVideoPath);
     });
 });

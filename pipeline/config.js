@@ -8,25 +8,25 @@ export default {
     // (to avoid making too many requests)
     scrapeSleep: 6,
     // max total number of images to save
-    //scrapeLimit: 5000,
-    scrapeLimit: 5,
+    scrapeLimit: 5000,
+    // scrapeLimit: 5,
 
     // path containing full-size retrieved jpgs
-    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
     //imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
-    imgPath: './testimg', // os x
+    // imgPath: './testimg',
 
     // output path for finished video & cropped images
-    //outPath: '/media/dan/Galactica/earth/output', // linux
+    outPath: '/media/dan/Galactica/earth/output', // linux
     //outPath: '/Volumes/Galactica/earth/output', // os x
-    outPath: './testout',
+    // outPath: './testout',
 
     // list of crop coordinates for the different cropped videos we're creating
     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
     cropCoords: [
         '1920x1080+1558+327', // #1 japan & korea
-        //'1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
-        //'1920x1080+540+2310' // #3 indonesia, malaysia, singapore
+        '1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
+        '1920x1080+540+2310' // #3 indonesia, malaysia, singapore
     ],
 
     // expected time between images, in seconds. 10 minutes for himawari-8
@@ -41,14 +41,14 @@ export default {
 
     // speed by which to slow down the original video
     speed: 0.666667,
-    //speed: 1,
+    // speed: 1,
 
     // desired fps of final interpolated video
     finalFPS: 60,
 
-    // limit max # of sessions to make video from, starting from most recent
+    // limit max # of sessions (days) to make video from, starting from most recent
     maxSessions: 40
-}
+};
 
 //const cropCoords = ['800x600+2000+200', '800x600+3000+1000'];
 //const cropCoords = ['2800x1576+1100+3260']; // australia - too big...

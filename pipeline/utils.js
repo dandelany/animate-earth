@@ -4,6 +4,7 @@ import sh from 'shelljs';
 
 export function fileExists(path) { return sh.test('-f', path); }
 export function dirExists(path) { return sh.test('-d', path); }
+export function ensureDir(path) { if(!dirExists(path)) sh.mkdir(path); }
 
 export function absoluteURI(baseURI, relativeURI) { return `${baseURI}/${relativeURI}`; }
 export function fileNameFromURI(url) { return _.last(url.split('/')); }
@@ -77,8 +78,10 @@ export function sessionsFromFiles(files, interval, maxGap) {
 export function makeVideoCmd(imgDir, fps, videoPath) {
     return `ffmpeg -y -framerate ${fps}\ -pattern_type glob -i '${imgDir}/*.jpg'\
             -c:v libx264 -preset ultrafast -qp 0 -r ${fps} -pix_fmt yuv420p ${videoPath}`;
-    //return `ffmpeg -y -framerate ${origFPS}\ -pattern_type glob -i '${imgDir}/*.jpg'\
-    //        -c:v libx264 -r ${origFPS} -pix_fmt yuv420p ${videoPath}`
+}
+
+export function makeCompressVideoCmd(inPath, outPath, {preset='veryslow'} = {}) {
+    return `ffmpeg -y -i ${inPath} -preset ${preset} ${outPath}`;
 }
 
 export function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
