@@ -1,4 +1,3 @@
-import fs from 'fs';
 import _ from 'lodash';
 import moment from 'moment';
 import sh from 'shelljs';
@@ -73,7 +72,7 @@ sessionsToRun.forEach((session, i) => {
 
         // delete the original images and lossless video files since we're done with them
         // only save compressed videos because images & lossless files are too big
-        console.log('removing images & lossless files...')
+        console.log('removing images & lossless files...');
         sh.rm('-rf', imgDir);
         sh.rm(origVideoPath);
         sh.rm(interpVideoPath);

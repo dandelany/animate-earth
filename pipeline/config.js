@@ -6,27 +6,29 @@ export default {
 
     // time, in seconds, for the scraper to sleep between requests
     // (to avoid making too many requests)
-    scrapeSleep: 6,
+    scrapeSleep: 1,
     // max total number of images to save
-    scrapeLimit: 5000,
+    //scrapeLimit: 5000,
     // scrapeLimit: 5,
+    scrapeLimit: 20,
 
     // path containing full-size retrieved jpgs
-    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
     //imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
-    // imgPath: './testimg',
+     imgPath: './testimg',
 
     // output path for finished video & cropped images
-    outPath: '/media/dan/Galactica/earth/output', // linux
+    //outPath: '/media/dan/Galactica/earth/output', // linux
     //outPath: '/Volumes/Galactica/earth/output', // os x
-    // outPath: './testout',
+     outPath: './testout',
 
     // list of crop coordinates for the different cropped videos we're creating
     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
     cropCoords: [
-        '1920x1080+1558+327', // #1 japan & korea
-        '1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
-        '1920x1080+540+2310' // #3 indonesia, malaysia, singapore
+        //'1920x1080+1558+327', // #1 japan & korea
+        //'1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
+        //'1920x1080+540+2310' // #3 indonesia, malaysia, singapore
+        '640x480+3000+2000'
     ],
 
     // expected time between images, in seconds. 10 minutes for himawari-8
@@ -47,7 +49,18 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 40
+    maxSessions: 1,
+
+    projectTitle: "Earth From Space",
+    // all video products we create
+    products: [
+        {
+            letter: 'A',
+            title: 'Japan, Korea',
+            crop: '1920x1080+1558+327',
+            title: ""
+        }
+    ]
 };
 
 //const cropCoords = ['800x600+2000+200', '800x600+3000+1000'];

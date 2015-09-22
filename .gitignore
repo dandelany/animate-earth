@@ -3,5 +3,10 @@ node_modules
 *.sublime-*
 .DS_Store
 Thumbs.db
-img/**/*.jpg
-video/**/*.mp4
+img/
+video/
+video_smv/
+dscovrgif/
+pipeline/secret/
+testimg/
+testout/

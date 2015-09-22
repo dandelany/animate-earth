@@ -28,8 +28,7 @@ request(indexURI, (error, response, body) => {
 
     const imgURIsToSave = _(imgURIs)
         .take(scrapeLimit) // limit to maximum #
-        .reject(imgFileExistsForURI) // don't save images that already exist
-        .map(absoluteImgURI) // convert to absolute URIs
+        .reject(imgFileExistsForURI) // don't save images that exist
         .value();
 
     console.log(`${imgURIsToSave.length} new images to download`);
@@ -51,10 +50,10 @@ request(indexURI, (error, response, body) => {
 function imgURIsFromIndexHtml(htmlText, resolution='high') {
     const $ = cheerio.load(htmlText);
     return Array.from(
-        $('a')
+        $('a') // find links with known text on the index page
             .filter((i, el) => $(el).text() === (resolution === 'high' ? 'Hi-Res Image' : 'Image'))
             .map((i, el) => $(el).attr('href'))
-    );
+    ).map(absoluteImgURI); // convert to absolute URIs
 }
 
 function absoluteImgURI(imgURI) { return absoluteURI(baseSrcURI, imgURI); }
