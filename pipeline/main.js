@@ -42,7 +42,7 @@ sessionsToRun.forEach((session, i) => {
         const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
 
         ensureDir(cropDir);
-        if(fileExists(interpCompressedPath)) return;
+        if(fileExists(interpCompressedPath)) return; // already made this one
 
         // make cropped images
         ensureDir(imgDir);
@@ -61,8 +61,9 @@ sessionsToRun.forEach((session, i) => {
 
         // use butterflow to interpolate original video to smooth lossless video
         if(fileExists(interpVideoPath)) sh.rm(interpVideoPath);
-        const butterflowCmd = makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS);
-        execAndLog(butterflowCmd, true, 'butterflow');
+        execAndLog(
+            makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS),
+        true, 'butterflow');
 
         // compress/encode the interpolated video
         execAndLog(makeCompressVideoCmd(interpVideoPath, interpCompressedPath), true, 'compression');
