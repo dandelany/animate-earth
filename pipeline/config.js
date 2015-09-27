@@ -60,6 +60,8 @@ export default {
         Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB.
     `,
 
+    playlistDescription: 'Daily interpolated Himawari-8 satellite images of <TITLE>.',
+
     products: [
         {
             id: 'A',

@@ -1,9 +1,10 @@
 {
-  "playlists": [
-    {
-      "id": "PLrmCQL5hELCzMrfK29yi2McvJ91SrdrDe",
+  "playlists": {
+    "PLrmCQL5hELCwb4rZr1FVIbUQirFOeyNSM": {
+      "id": "PLrmCQL5hELCwb4rZr1FVIbUQirFOeyNSM",
       "title": "Earth From Space: Japan, Korea, Beijing & Shanghai",
+      "description": "Daily interpolated Himawari-8 satellite images of Japan, Korea, Beijing & Shanghai.",
       "productId": "A"
     }
-  ]
+  }
 }

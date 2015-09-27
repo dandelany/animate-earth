@@ -10,38 +10,44 @@ const {OAuth2} = Google.auth;
 
 import {fileExists} from './utils.js';
 import credentials from "./secret/credentials.json";
-import { projectTitle, products } from './config.js'
+import { projectTitle, playlistDescription, products } from './config.js'
 
 makePlaylists();
 
 function makePlaylists() {
     authenticateYoutube(credentials, './secret/token.json', (Youtube, oauth2Client) => {
-        const makePlaylistTitle = (product) => `${projectTitle}: ${product.title}`;
-        ensurePlaylistsForProducts(Youtube, products, makePlaylistTitle);
+        const makeTitle = (product) => `${projectTitle}: ${product.title}`;
+        const makeDescription = product => playlistDescription.replace("<TITLE>", product.title);
+        ensurePlaylistsForProducts(Youtube, products, makeTitle, makeDescription);
     });
 }
 
-function ensurePlaylistsForProducts(Youtube, products, makeTitle) {
+function ensurePlaylistsForProducts(Youtube, products, makeTitle, makeDescription=()=>'') {
     const q = queue({concurrency: 1});
     if(!makeTitle) makeTitle = (product) => product.title;
 
     listPlaylists(Youtube, (err, data) => {
         const playlists = data.items;
-        const playlistsByTitle = _.indexBy(playlists, p => p.snippet.title);
         const playlistsById = _.indexBy(playlists, 'id');
         const log = getYoutubeLog();
         const logPlaylistsByProductId = _.indexBy(log.playlists, 'productId');
 
         products.forEach(product => {
             const playlistInLog = logPlaylistsByProductId[product.id];
+            // todo update title or description if changed
+            // check if playlist for this product exists in youtube-log
             if(!playlistInLog || !_.has(playlistsById, playlistInLog.id)) {
                 if(playlistInLog && !_.has(playlistsById, playlistInLog.id)) {
+                    // playlist exists in the log but not in real life, so it was deleted, delete from logs
                     console.log(`removing deleted playlist ${playlistInLog.id} from log`);
-                    log.playlists.splice(_.findIndex(log.playlists, p => p.id === playlistInLog.id), 1);
+                    delete log.playlists[playlistInLog.id];
                     saveYoutubeLog(log);
                 }
                 q.push(function(next) {
-                    const playlist = {title: makeTitle(product)};
+                    const playlist = {
+                        title: makeTitle(product),
+                        description: makeDescription(product)
+                    };
                     addPlaylist(Youtube, playlist, (err, data) => {
                         if(err) throw err;
                         console.log('created playlist', playlist);
@@ -73,13 +79,15 @@ function addPlaylist(Youtube, playlist, callback, {status='public', logData={}}=
         },
         (err, data) => {
             if(!err) {
-                // then save record of playlist to youtube-log
+                // then save record of playlist to youtube-log.json
                 const log = getYoutubeLog();
-                log.playlists.push(_.assign({
-                    id: data.id,
-                    title: data.snippet.title
-                    //response: data
-                }, logData));
+                _.assign(log.playlists, {
+                    [data.id]: _.assign({
+                        id: data.id,
+                        title: data.snippet.title,
+                        description: data.snippet.description
+                    }, logData)
+                });
                 saveYoutubeLog(log);
             }
             callback(err, data);
