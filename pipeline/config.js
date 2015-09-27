@@ -53,15 +53,23 @@ export default {
 
     projectTitle: "Earth From Space",
     // all video products we create
+    videoDescription: `
+        1080p highly recommended!
+        Images taken every 10 minutes on <DATE> from the Himawari 8 spacecraft,
+        motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.
+        Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB.
+    `,
+
     products: [
         {
-            letter: 'A',
-            title: 'Japan, Korea',
-            crop: '1920x1080+1558+327',
-            title: ""
+            id: 'A',
+            title: 'Japan, Korea, Beijing & Shanghai',
+            crop: '1920x1080+1558+327'
         }
     ]
 };
+
+
 
 //const cropCoords = ['800x600+2000+200', '800x600+3000+1000'];
 //const cropCoords = ['2800x1576+1100+3260']; // australia - too big...
