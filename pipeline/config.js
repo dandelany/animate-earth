@@ -6,21 +6,21 @@ export default {
 
     // time, in seconds, for the scraper to sleep between requests
     // (to avoid making too many requests)
-    scrapeSleep: 1,
+    scrapeSleep: 3,
     // max total number of images to save
     //scrapeLimit: 5000,
     // scrapeLimit: 5,
-    scrapeLimit: 20,
+    scrapeLimit: 2000000,
 
     // path containing full-size retrieved jpgs
     //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
-    //imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
-     imgPath: './testimg',
+    imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
+    // imgPath: './testimg',
 
     // output path for finished video & cropped images
     //outPath: '/media/dan/Galactica/earth/output', // linux
-    //outPath: '/Volumes/Galactica/earth/output', // os x
-     outPath: './testout',
+    outPath: '/Volumes/Galactica/earth/output', // os x
+    // outPath: './testout',
 
     // list of crop coordinates for the different cropped videos we're creating
     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
@@ -49,7 +49,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 1,
+    maxSessions: 2,
 
     projectTitle: "Earth From Space",
     // all video products we create
@@ -60,13 +60,21 @@ export default {
         Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB.
     `,
 
+    // description template for playlists
     playlistDescription: 'Daily interpolated Himawari-8 satellite images of <TITLE>.',
+    // common tags for the youtube playlists
+    playlistTags: [],
 
     products: [
+        //{
+        //    id: 'A',
+        //    title: 'Japan, Korea, Beijing & Shanghai',
+        //    crop: '1920x1080+1558+327'
+        //}
         {
-            id: 'A',
-            title: 'Japan, Korea, Beijing & Shanghai',
-            crop: '1920x1080+1558+327'
+            id: 'TEST',
+            title: 'Test patch',
+            crop: '640x480+2558+927'
         }
     ]
 };

@@ -12,100 +12,117 @@ import {fileExists} from './utils.js';
 import credentials from "./secret/credentials.json";
 import { projectTitle, playlistDescription, products } from './config.js'
 
+// shared Youtube singleton
+const Youtube = Google.youtube("v3");
+
 makePlaylists();
 
 function makePlaylists() {
-    authenticateYoutube(credentials, './secret/token.json', (Youtube, oauth2Client) => {
+    //const makePlaylistTitle = (product) => `${projectTitle}: ${product.title}`;
+    //const makePlaylistDescription = product => `${playlistDescription.replace("<TITLE>", product.title)}`;
+
+    authenticateYoutube(credentials, './secret/token.json', (oauth2Client) => {
         const makeTitle = (product) => `${projectTitle}: ${product.title}`;
-        const makeDescription = product => playlistDescription.replace("<TITLE>", product.title);
-        ensurePlaylistsForProducts(Youtube, products, makeTitle, makeDescription);
+        const makeDescription = product => `${playlistDescription.replace("<TITLE>", product.title)}`;
+        ensurePlaylistsForProducts(products, _.noop(), {makeTitle, makeDescription});
     });
 }
 
-function ensurePlaylistsForProducts(Youtube, products, makeTitle, makeDescription=()=>'') {
+function uploadVideosForProducts(products) {
+
+
+    //const log = getYoutubeLog();
+    //const logPlaylistsByProductId = _.indexBy(log.playlists, 'productId');
+    //
+    //products.forEach(product => {
+    //     playlists assumed to already exist in log
+        //const logPlaylist = logPlaylistsByProductId[product.id];
+        //if(!logPlaylist) return;
+        //const logItemsById = _.indexBy(logPlaylist.items || [], 'id');
+        //
+        //listPlaylistItems(logPlaylist.id, (err, data) => {
+        //    const {items} = data;
+        //    console.log(data);
+        //    const itemInLog =
+        //})
+    //});
+}
+
+function ensurePlaylistsForProducts(products, callback, {makeTitle, makeDescription=()=>''}={}) {
     const q = queue({concurrency: 1});
     if(!makeTitle) makeTitle = (product) => product.title;
 
-    listPlaylists(Youtube, (err, data) => {
-        const playlists = data.items;
-        const playlistsById = _.indexBy(playlists, 'id');
-        const log = getYoutubeLog();
-        const logPlaylistsByProductId = _.indexBy(log.playlists, 'productId');
+    listPlaylists((err, data) => {
+        const playlistsByProductId = _.omit(_.indexBy(data.items, getPlaylistProductId), null);
 
         products.forEach(product => {
-            const playlistInLog = logPlaylistsByProductId[product.id];
-            // todo update title or description if changed
-            // check if playlist for this product exists in youtube-log
-            if(!playlistInLog || !_.has(playlistsById, playlistInLog.id)) {
-                if(playlistInLog && !_.has(playlistsById, playlistInLog.id)) {
-                    // playlist exists in the log but not in real life, so it was deleted, delete from logs
-                    console.log(`removing deleted playlist ${playlistInLog.id} from log`);
-                    delete log.playlists[playlistInLog.id];
-                    saveYoutubeLog(log);
-                }
+            const productPlaylist = playlistsByProductId[product.id];
+            const updatedPlaylist = {
+                title: makeTitle(product),
+                description: makeDescription(product),
+                tags: [`id:${product.id}`].concat(product.tags || [])
+            };
+            if(!productPlaylist) {
                 q.push(function(next) {
-                    const playlist = {
-                        title: makeTitle(product),
-                        description: makeDescription(product)
-                    };
-                    addPlaylist(Youtube, playlist, (err, data) => {
+                    addPlaylist(updatedPlaylist, (err, data) => {
                         if(err) throw err;
-                        console.log('created playlist', playlist);
+                        console.log('created playlist', updatedPlaylist);
                         next();
-                    }, {logData: {productId: product.id}});
+                    });
                 });
-            } else console.log('playlist exists for', product.title);
+            } else if(!_.every(updatedPlaylist, (val, key) => _.isEqual(productPlaylist.snippet[key], val))) {
+                // youtube playlist doesn't match expected title/description/tags, so update it
+                q.push(function(next) {
+                    updatePlaylist(productPlaylist.id, updatedPlaylist, (err, data) => {
+                        if(err) throw err;
+                        console.log('updated playlist', updatedPlaylist);
+                        next();
+                    })
+                });
+            } else console.log(`playlist ${updatedPlaylist.title} is OK.`);
         });
 
         q.start();
     });
 }
 
-function listPlaylists(Youtube, callback, {part='id,contentDetails,snippet,status'}={}) {
-    if(!callback) callback = (err) => { throw err; };
-    Youtube.playlists.list({part, mine: true}, callback);
+function getPlaylistProductId(playlist) {
+    const idRegex = /^id:(.+)/;
+    const idTag = _.find(playlist.snippet.tags || [], tag => tag.match(idRegex));
+    return idTag ? idTag.match(idRegex)[1] : null;
 }
 
-function addPlaylist(Youtube, playlist, callback, {status='public', logData={}}={}) {
+function listPlaylists(callback, {part='id,contentDetails,snippet,status'}={}) {
+    if(!callback) callback = (err) => { throw err; };
+    Youtube.playlists.list({part, mine: true, maxResults: 50}, callback);
+}
+
+function listPlaylistItems(playlistId, callback, {part='id,contentDetails,snippet,status'}={}) {
+    if(!callback) callback = (err) => { throw err; };
+    Youtube.playlistItems.list({part, playlistId, maxResults: 50}, callback);
+}
+
+function updatePlaylist(id, snippet, callback, {privacyStatus='public'}={}) {
+    if(!callback) callback = (err) => { throw err; };
+    Youtube.playlists.update({
+        part: 'snippet,status',
+        resource: {id, snippet, status: {privacyStatus}}
+    }, callback);
+}
+
+function addPlaylist(snippet, callback, {privacyStatus='public'}={}) {
     if(!callback) callback = (err) => { throw err; };
     // insert new playlist via Youtube api
-    Youtube.playlists.insert(
-        {
-            part: 'snippet,status',
-            resource: {
-                snippet: playlist,
-                status: {privacyStatus: status}
-            }
-        },
-        (err, data) => {
-            if(!err) {
-                // then save record of playlist to youtube-log.json
-                const log = getYoutubeLog();
-                _.assign(log.playlists, {
-                    [data.id]: _.assign({
-                        id: data.id,
-                        title: data.snippet.title,
-                        description: data.snippet.description
-                    }, logData)
-                });
-                saveYoutubeLog(log);
-            }
-            callback(err, data);
-        }
-    );
+    Youtube.playlists.insert({
+        part: 'snippet,status',
+        resource: {snippet, status: {privacyStatus}}
+    }, callback);
 }
 
-function getYoutubeLog() {
-    return JSON.parse(sh.cat('./youtube-log.json'));
-}
-function saveYoutubeLog(log) {
-    return JSON.stringify(log, true, 2).to('./youtube-log.json'); // sh.to
-}
 
 function authenticateYoutube(credentials, tokenPath, callback) {
     const {client_id, client_secret, redirect_uris} = credentials.web;
     const oauth2Client = new OAuth2(client_id, client_secret, redirect_uris[0]);
-    const Youtube = Google.youtube("v3");
     Google.options({auth: oauth2Client});
 
     if(fileExists(tokenPath)) {
@@ -113,17 +130,17 @@ function authenticateYoutube(credentials, tokenPath, callback) {
         const tokens = JSON.parse(sh.cat(tokenPath));
         oauth2Client.setCredentials(tokens);
         // get playlists to check if token is really valid or not
-        listPlaylists(Youtube, (err, data) => {
+        listPlaylists((err, data) => {
             if(err) {
                 console.log('youtube token invalid, getting a new one');
-                getYoutubeTokens(oauth2Client, tokenPath, _.partial(callback, Youtube));
+                getYoutubeTokens(oauth2Client, tokenPath, callback);
             } else {
                 console.log('youtube token is still valid');
-                callback(Youtube, oauth2Client);
+                callback(oauth2Client);
             }
         }, {part: 'id'});
     } else {
-        getYoutubeTokens(oauth2Client, tokenPath, _.partial(callback, Youtube));
+        getYoutubeTokens(oauth2Client, tokenPath, callback);
     }
 }
 

@@ -11,7 +11,7 @@ import {
 } from './utils.js';
 
 import {
-    imgPath, outPath, cropCoords, imgInterval, maxFrameGap,
+    imgPath, outPath, cropCoords, products, imgInterval, maxFrameGap,
     origFPS, speed, finalFPS, maxSessions
 } from './config.js';
 
@@ -31,7 +31,8 @@ sessionsToRun.forEach((session, i) => {
     const sessionDir = `${outPath}/${dirName}`;
     ensureDir(sessionDir);
 
-    cropCoords.forEach((cropCoord, j) => {
+    products.forEach((product, j) => {
+        const cropCoord = product.crop;
         const cropDir = `${sessionDir}/${cropCoord}`;
         const imgDir = `${cropDir}/img`;
         const videoDir = `${cropDir}/video`;
