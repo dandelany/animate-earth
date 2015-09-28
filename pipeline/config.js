@@ -13,23 +13,14 @@ export default {
     scrapeLimit: 2000000,
 
     // path containing full-size retrieved jpgs
-    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
     // imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
-    // imgPath: './testimg',
+     imgPath: '../testimg',
 
     // output path for finished video & cropped images
-    outPath: '/media/dan/Galactica/earth/output-old2', // linux
+    //outPath: '/media/dan/Galactica/earth/output-old2', // linux
     // outPath: '/Volumes/Galactica/earth/output', // os x
-    // outPath: './testout',
-
-    // list of crop coordinates for the different cropped videos we're creating
-    // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
-    // cropCoords: [
-    //     //'1920x1080+1558+327', // #1 japan & korea
-    //     //'1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
-    //     //'1920x1080+540+2310' // #3 indonesia, malaysia, singapore
-    //     '640x480+3000+2000'
-    // ],
+     outPath: '../testout',
 
     // expected time between images, in seconds. 10 minutes for himawari-8
     imgInterval: 60 * 10,
@@ -84,18 +75,18 @@ export default {
             // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
             crop: '1920x1080+1558+327'
         },
-        {
-            id: 'B',
-            title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
-            tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
-            crop: '1920x1080+265+1675'
-        },
-        {
-            id: 'C',
-            title: 'Indonesia, Malaysia & Singapore',
-            tags: ['Indonesia', 'Malaysia', 'Singapore'],
-            crop: '1920x1080+540+2310'
-        },
+        //{
+        //    id: 'B',
+        //    title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+        //    tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+        //    crop: '1920x1080+265+1675'
+        //},
+        //{
+        //    id: 'C',
+        //    title: 'Indonesia, Malaysia & Singapore',
+        //    tags: ['Indonesia', 'Malaysia', 'Singapore'],
+        //    crop: '1920x1080+540+2310'
+        //},
         // {
         //     id: 'TEST',
         //     title: 'Test patch',

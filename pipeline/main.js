@@ -49,7 +49,7 @@ sessionsToRun.forEach((session, i) => {
         session.files.forEach((file, k) => {
             const croppedPath = `${imgDir}/${timeStrFromPath(file)}.jpg`;
             if(fileExists(croppedPath)) return; // don't redo crops
-            console.log(`cropping session ${i+1} of ${sessionsToRun.length}, crop ${j+1} of ${cropCoords.length}, ` +
+            console.log(`cropping session ${i+1} of ${sessionsToRun.length}, crop ${j+1} of ${products.length}, ` +
                 `file ${k+1} of ${session.files.length}, ${croppedPath}`);
             execAndLog(`convert '${file}' -crop ${cropCoord} '${croppedPath}'`);
         });
