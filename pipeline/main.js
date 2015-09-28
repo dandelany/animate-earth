@@ -22,7 +22,7 @@ const files = sh.ls(`${imgPath}/*.jpg`);
 // split files into sessions wherever gaps are > maxFrameGap
 // mostly happens at night between local days (data source is missing ~8 hrs of data / day)
 const sessions = sessionsFromFiles(files, imgInterval, maxFrameGap);
-assert(files.length, _.reduce(sessions, (total, session) => total + session.files.length, 0));
+assert.equal(files.length, _.reduce(sessions, (total, session) => total + session.files.length, 0));
 
 const sessionsToRun = _.take(sessions.reverse(), maxSessions);
 
