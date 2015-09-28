@@ -52,23 +52,32 @@ export default {
     maxSessions: 2,
 
     projectTitle: "Earth From Space",
-    // all video products we create
-    videoDescription: `
-        1080p highly recommended!
-        Images taken every 10 minutes on <DATE> from the Himawari 8 spacecraft,
-        motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.
-        Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB.
-    `,
+
+    // video title template, to be filled in at time of video creation
+    videoTitle: '${projectTitle} - ${date}: ${product.title}',
+    videoDescription: [
+        "1080p highly recommended!",
+        "Images of ${product.title} taken every 10 minutes on ${date} from the Himawari 8 spacecraft.",
+        "Video motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.",
+        "Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB."
+    ].join("\n"),
+    videoTags: [
+        'Satellite imagery', 'Spaceflight', 'Earth', 'Clouds',
+        'Space', 'Satellite', 'Himawari-8', 'Earth From Space',
+        'Motion interpolation', 'Smoothed video', 'Butterflow'
+    ],
 
     // description template for playlists
     playlistDescription: 'Daily interpolated Himawari-8 satellite images of <TITLE>.',
     // common tags for the youtube playlists
     playlistTags: [],
 
+    // all video products we create
     products: [
         //{
         //    id: 'A',
         //    title: 'Japan, Korea, Beijing & Shanghai',
+        //    tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
         //    crop: '1920x1080+1558+327'
         //}
         {
