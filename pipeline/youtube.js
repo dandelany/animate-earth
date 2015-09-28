@@ -117,15 +117,14 @@ function ensureVideosForProduct(product, playlist, callback) {
                 if(fileExists(videoPath) && !videosBySessionId[sessionId]) {
                     // file exists for this product, and video is not in playlist, so upload it
                     q.push(function(next) {
-                        const [start, end] = sessionId.split('-').map(parseTimeStr);
-                        const dateStr = start.format('MMM D, YYYY');
+                        const dateStr = parseTimeStr(sessionId.split('-')[0]).format('MMM D, YYYY');
                         const videoInfo = {projectTitle, product, date: dateStr};
                         const snippet = {
                             title: _.template(videoTitle)(videoInfo),
                             description: _.template(videoDescription)(videoInfo),
                             tags: (product.tags || []).concat(videoTags || []).concat(`id:${sessionId}`)
                         };
-
+                        
                         // upload the video
                         console.log('uploading', snippet.title, 'from', videoPath);
                         uploadVideo(videoPath, snippet, (err, data) => {
