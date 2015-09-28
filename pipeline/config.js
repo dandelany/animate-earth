@@ -13,23 +13,23 @@ export default {
     scrapeLimit: 2000000,
 
     // path containing full-size retrieved jpgs
-    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
-    imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
+    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+    // imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
     // imgPath: './testimg',
 
     // output path for finished video & cropped images
-    //outPath: '/media/dan/Galactica/earth/output', // linux
-    outPath: '/Volumes/Galactica/earth/output', // os x
+    outPath: '/media/dan/Galactica/earth/output-old2', // linux
+    // outPath: '/Volumes/Galactica/earth/output', // os x
     // outPath: './testout',
 
     // list of crop coordinates for the different cropped videos we're creating
     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
-    cropCoords: [
-        //'1920x1080+1558+327', // #1 japan & korea
-        //'1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
-        //'1920x1080+540+2310' // #3 indonesia, malaysia, singapore
-        '640x480+3000+2000'
-    ],
+    // cropCoords: [
+    //     //'1920x1080+1558+327', // #1 japan & korea
+    //     //'1920x1080+265+1675', // #2 thailand, malaysia, singapore, laos, cambodia, vietnam, philippines
+    //     //'1920x1080+540+2310' // #3 indonesia, malaysia, singapore
+    //     '640x480+3000+2000'
+    // ],
 
     // expected time between images, in seconds. 10 minutes for himawari-8
     imgInterval: 60 * 10,
@@ -49,11 +49,11 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 2,
+    maxSessions: 1,
 
     projectTitle: "Earth From Space",
 
-    // video title template, to be filled in at time of video creation
+    // video title/description template, to be filled in at time of video creation
     videoTitle: '${projectTitle} - ${date}: ${product.title}',
     videoDescription: [
         "1080p highly recommended!",
@@ -61,6 +61,8 @@ export default {
         "Video motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.",
         "Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB."
     ].join("\n"),
+    
+    // common tags for all videos
     videoTags: [
         'Satellite imagery', 'Spaceflight', 'Earth', 'Clouds',
         'Space', 'Satellite', 'Himawari-8', 'Earth From Space',
@@ -74,17 +76,31 @@ export default {
 
     // all video products we create
     products: [
-        //{
-        //    id: 'A',
-        //    title: 'Japan, Korea, Beijing & Shanghai',
-        //    tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
-        //    crop: '1920x1080+1558+327'
-        //}
         {
-            id: 'TEST',
-            title: 'Test patch',
-            crop: '640x480+2558+927'
-        }
+            id: 'A',
+            title: 'Japan, Korea, Beijing & Shanghai',
+            tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
+            // list of crop coordinates for the cropped videos we're creating
+            // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
+            crop: '1920x1080+1558+327'
+        },
+        {
+            id: 'B',
+            title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+            tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+            crop: '1920x1080+265+1675'
+        },
+        {
+            id: 'C',
+            title: 'Indonesia, Malaysia & Singapore',
+            tags: ['Indonesia', 'Malaysia', 'Singapore'],
+            crop: '1920x1080+540+2310'
+        },
+        // {
+        //     id: 'TEST',
+        //     title: 'Test patch',
+        //     crop: '640x480+2558+927'
+        // }
     ]
 };
 

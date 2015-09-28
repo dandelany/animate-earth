@@ -77,7 +77,8 @@ function ensurePlaylistsForProducts(products, callback, {makeTitle, makeDescript
     });
 }
 
-function uploadVideosForProducts(products) {
+function uploadVideosForProducts(products, callback=_.noop) {
+    const q = queue({concurrency: 1});
     // get playlists from Youtube API
     listPlaylists((err, data) => {
         catchErr(err);
@@ -89,8 +90,14 @@ function uploadVideosForProducts(products) {
         products.forEach(product => {
             const productPlaylist = playlistsByProductId[product.id];
             if(!productPlaylist) return; // assume playlists exist
-            ensureVideosForProduct(product, productPlaylist, () => { console.log('all uploaded')});
+            q.push(function(next) {
+                ensureVideosForProduct(product, productPlaylist, () => { 
+                    console.log(`all videos uploaded for ${product.title}`);
+                    next();
+                });
+            });
         });
+        q.start(callback);
     });
 }
 
@@ -136,7 +143,7 @@ function ensureVideosForProduct(product, playlist, callback) {
                                 console.log(`added video ${data.snippet.title} to playlist ${playlist.snippet.title}`);
                                 next();
                             }); // todo figure out position
-                        }, {privacyStatus: 'private'})
+                        })
                     });
                 } else if(videosBySessionId[sessionId]) {
                     // todo ensure correct information
