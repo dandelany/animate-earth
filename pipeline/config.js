@@ -41,7 +41,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 1,
+    maxSessions: 10,
 
     projectTitle: "Earth From Space",
 
