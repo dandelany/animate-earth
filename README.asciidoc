@@ -74,3 +74,36 @@ npm install -g babel
 == scrape.js
 == main.js
 == youtube.js
+
+= Miscellaneous useful commands
+
+```
+# interpolate video with butterflow
+butterflow -s full,spd=0.5 -r 60 -o output.mp4 input.mp4
+
+# make video from frames
+ffmpeg -framerate 30 -pattern_type glob -i './*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p output.mp4
+
+# extract frames from video
+ffmpeg -i input.mp4 -r 30 -f image2 img/f%3d.png
+
+# get info about video
+ffprobe input.mp4
+
+# small animated gif from video
+ffmpeg -i 30-interp.mp4 -pix_fmt rgb24 -s 320x240 output.gif
+
+# video from animated gif
+ffmpeg -i input.gif output.mp4
+
+# side by side video comparison of two videos
+# A left side vs A left side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[bg]; [1:v]setpts=PTS-STARTPTS[fg]; [bg][fg]overlay=w/2" output.mp4
+
+# A right side vs B right side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[l]; [1:v]setpts=PTS-STARTPTS[r]; [l]crop=iw/2:ih:iw/2:0[l]; [r][l]overlay=0" output.mp4
+
+# A left side vs B right side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[l]; [1:v]setpts=PTS-STARTPTS[r]; [l]crop=iw/2:ih:0:0[l]; [r][l]overlay=0" output.mp4
+
+```
