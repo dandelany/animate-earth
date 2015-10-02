@@ -1,10 +1,33 @@
 = animate-earth
 Dan Delany <dan.delany@gmail.com>
 
-This repository is an experiment in applying optical-flow-based motion interpolation to pre-processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. The final products can be found on this Youtube channel, updated nearly daily. `testing`
+= Overview
+This repository is an experiment in applying optical-flow-based motion interpolation to pre-processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. The final products can be found on this Youtube channel, updated nearly daily.
 
 == Purpose
 something something
 
 == Process
 something
+
+= Butterflow
+The project's main dependency is Butterflow
+
+Butterflow supports Mac OS X, Ubuntu 15.04 (Vivid Vervet), Debian 8.2 (Jessie), and Arch Linux
+
+== Mac OS X
+The current version of Butterflow seems to be most stable/reliable and easiest to set up on OS X, if you have a [recent Mac computer that supports OpenCL](https://support.apple.com/en-us/HT202823). An older version can be installed [with Homebrew + this one-liner](https://github.com/dthpham/butterflow#os-x) - *however, at the time of writing, the published version of butterflow on Homebrew contains a [bug which results in uninterpolated gaps between video segments](https://github.com/dthpham/butterflow/issues/13).* For this reason, I recommend that you install it from a more recent version of the source, *unless* you plan to just use butterflow for simple interpolation of videos without any missing frames to account for - ie. if you plan to not use the scripts in this repo.
+
+[To install from source on OS X, just follow these instructions.](https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#os-x) You will need to [install Homebrew first](http://brew.sh/) if you don't already have it. Note that the last few commands in that list must be re-entered any time you open a new terminal session or reboot, in order to use the source version instead of the global version:
+
+```
+cd butterflow
+source bin/activate
+echo "$(brew --prefix)/lib/python2.7/site-packages" > lib/python2.7/site-packages/butterflow.pth
+python setup.py develop
+```
+
+== Linux
+
+
+== Dependencies
