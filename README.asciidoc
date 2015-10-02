@@ -63,7 +63,7 @@ ffmpeg -i input.gif output.mp4
 https://github.com/dthpham/butterflow/wiki/Example-Usage[More example Butterflow usage is shown on the wiki], and additional command parameters can be discovered by running `butterflow -h`.
 
 == Project Scripts
-The scripts require a bit of cleanup and therefore should probably not be used at the moment unless you know what you are doing. I will clean them up shortly and put some more instructions here when I do.
+The scripts require a bit of cleanup on my part, and therefore probably should not be used yet unless you know what you are doing. I will clean them up shortly and put some more instructions here when I do.
 
 If you are the adventurous type, you can clone this repo and install dependencies by running:
 ```
