@@ -29,10 +29,11 @@ The process implemented by these scripts, described in detail in the Scripts sec
 .. Compresses and saves the video as a local .mp4 file.
 . *youtube.js* - Automatically updates the project's Youtube channel by creating playlists for each product and uploading newly created videos via the Youtube Data API.
 
-= Butterflow
+= Setup Guide
+== Butterflow
 The project's main dependency is Butterflow. Butterflow supports Mac OS X, Ubuntu 15.04 (Vivid Vervet), Debian 8.2 (Jessie), and Arch Linux.
 
-== Mac OS X
+=== Mac OS X
 The current version of Butterflow seems to be most stable/reliable and easiest to set up on OS X, if you have a https://support.apple.com/en-us/HT202823[recent Mac computer that supports OpenCL]. An older version can be installed https://github.com/dthpham/butterflow#os-x[with Homebrew + this one-liner] - *however, at the time of writing, the published version of butterflow on Homebrew contains a https://github.com/dthpham/butterflow/issues/13[bug which results in uninterpolated gaps between video segments].* For this reason, I recommend that you install it from a more recent version of the source, *unless* you plan to just use butterflow without these scripts, for simple interpolation of existing videos without any missing frames to account for.
 
 https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#os-x[To install from source on OS X, just follow these instructions.] You will need to http://brew.sh/[install Homebrew first] if you don't already have it. Note that the last few commands in that list must be re-entered any time you open a new terminal session or reboot, in order to use the source version instead of the global version:
@@ -44,13 +45,13 @@ echo "$(brew --prefix)/lib/python2.7/site-packages" > lib/python2.7/site-package
 python setup.py develop
 ```
 
-== Ubuntu Linux
+=== Ubuntu Linux
 I have also gotten Butterflow installed from source on Ubuntu 15.04. It may not work on versions older than this due to lack of support for FFmpeg. *At the time of writing, I am getting degraded performance on Ubuntu + a NVidia GPU (20x slower vs. comparable Mac), which others may or may not experience.* I'm working with the developer to debug this.  https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#ubuntu[The Ubuntu install instructions are here]. If you're using a NVidia graphics card, you may also have to https://github.com/dthpham/butterflow/issues/6#issuecomment-141585235[install these extra dependencies] and https://github.com/dthpham/butterflow/issues/6#issuecomment-141722016[perform these steps].
 
-== Other Linuxi
+=== Other Linuxi
 dthpham (Butterflow developer) also provides instructions for installation on https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#debian[Debian] and https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#arch-linux[Arch Linux], which I have not tried. Other Linux distributions may also work similarly; the main dependencies to install are Python, OpenCV, OpenCL and FFmpeg.
 
-== Playing with Butterflow
+=== Playing with Butterflow
 Once you have installed Butterflow, make sure it's working by running `butterflow --version` and `butterflow -d`. Now you can slow down an existing video and interpolate it to 60 FPS by running a command like:
 ```
 butterflow -s full,spd=0.5 -r 60 -o output.mp4 input.mp4
@@ -61,7 +62,7 @@ ffmpeg -i input.gif output.mp4
 ```
 https://github.com/dthpham/butterflow/wiki/Example-Usage[More example Butterflow usage is shown on the wiki], and additional command parameters can be discovered by running `butterflow -h`.
 
-= Project Scripts
+== Project Scripts
 The scripts require a bit of cleanup and therefore should probably not be used at the moment unless you know what you are doing. I will clean them up shortly and put some more instructions here when I do.
 
 If you are the adventurous type, you can clone this repo and install dependencies by running:
@@ -77,10 +78,10 @@ cd pipeline
 babel-node <filename>.js
 ```
 
-== config.js
-== scrape.js
-== main.js
-== youtube.js
+=== config.js
+=== scrape.js
+=== main.js
+=== youtube.js
 
 = Results and Discussion
 
