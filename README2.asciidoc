@@ -1,9 +1,12 @@
+
+:toc:
+:toc-placement: macro
+
+
+
 = animate-earth
 Dan Delany <dan.delany@gmail.com>
 
-
-:toc: macro
-...
 toc::[]
 
 = Overview
