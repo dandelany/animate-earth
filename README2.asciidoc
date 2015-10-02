@@ -26,8 +26,8 @@ The overall process implemented by these scripts is essentially:
 .. Splits the list of images into day-long sessions.
 .. Makes cropped copies of the full-sized images for different regions & sessions.
 .. Combines the cropped images into low-framerate video files.
-.. Parses the timestamps of the images to identify gaps between image times that are > the expected 10 minute image interval.
-.. Generates and runs a command for Butterflow to produce a high-framerate motion interpolated video which corrects for imaging gaps by interpolating additional frames.
+.. Parses image timestamps to identify gaps between images that are > the expected 10 minute interval.
+.. Generates and runs a command for Butterflow to produce a high-framerate, motion-interpolated video which corrects for imaging gaps by interpolating additional frames.
 .. Compresses and saves the video as a local .mp4 file.
 . *youtube.js* - Automatically updates the project's Youtube channel by creating playlists for each product and uploading newly created videos via the Youtube Data API.
 
