@@ -55,6 +55,22 @@ dthpham (Butterflow developer) also provides instructions for installation on ht
 == Playing with Butterflow
 Once you have installed Butterflow, make sure it's working by running `butterflow --version` and `butterflow -d`. Now you can slow down an existing video and interpolate it to 60 FPS by running a command like:
 ```
-butterflow -s full,spd=0.5 -r 60 -o outfile.mp4 infile.mp4
+butterflow -s full,spd=0.5 -r 60 -o output.mp4 input.mp4
 ```
-https://github.com/dthpham/butterflow/wiki/Example-Usage[More example usage is shown on the Butterflow wiki], and additional command parameters can be discovered by running `butterflow -h`.
+If you don't have an mp4 lying around, you can make one from an animated gif using ffmpeg (which is already installed as a Butterflow dependency):
+```
+ffmpeg -i input.gif output.mp4
+```
+https://github.com/dthpham/butterflow/wiki/Example-Usage[More example Butterflow usage is shown on the wiki], and additional command parameters can be discovered by running `butterflow -h`.
+
+= Project Scripts
+info coming soon...
+```
+git clone https://github.com/dandelany/animate-earth.git
+cd animate-earth
+npm install
+npm install -g babel
+```
+== scrape.js
+== main.js
+== youtube.js
