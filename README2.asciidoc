@@ -1,16 +1,10 @@
-[float]
-animate-earth
-=============
+= animate-earth
 Dan Delany <dan.delany@gmail.com>
 
 This repository is an experiment in applying optical-flow-based motion interpolation to pre-processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. The final products can be found on this Youtube channel, updated nearly daily.
 
-Purpose
--------
-
+== Purpose
 something something
 
-Process
--------
-
+== Process
 something
