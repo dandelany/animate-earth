@@ -48,7 +48,7 @@ python setup.py develop
 === Ubuntu Linux
 I have also gotten Butterflow installed from source on Ubuntu 15.04. It may not work on versions older than this due to lack of support for FFmpeg. *At the time of writing, I am getting degraded performance on Ubuntu + a NVidia GPU (20x slower vs. comparable Mac), which others may or may not experience.* I'm working with the developer to debug this.  https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#ubuntu[The Ubuntu install instructions are here]. If you're using a NVidia graphics card, you may also have to https://github.com/dthpham/butterflow/issues/6#issuecomment-141585235[install these extra dependencies] and https://github.com/dthpham/butterflow/issues/6#issuecomment-141722016[perform these steps].
 
-=== Other Linuxi
+=== Other Linuxes
 dthpham (Butterflow developer) also provides instructions for installation on https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#debian[Debian] and https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#arch-linux[Arch Linux], which I have not tried. Other Linux distributions may also work similarly; the main dependencies to install are Python, OpenCV, OpenCL and FFmpeg.
 
 === Playing with Butterflow
