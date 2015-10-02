@@ -1,0 +1,109 @@
+
+:toc:
+:toc-placement: macro
+
+= animate-earth
+Dan Delany <dan.delany@gmail.com>
+
+toc::[]
+
+= Overview
+This repository is an experiment in applying optical-flow-based motion interpolation to pre-processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. https://www.youtube.com/channel/UC6Mlo4zfmEITcNoCpBKfEfg/playlists[The final products can be found on this Youtube channel], updated nearly daily.
+
+== Acknowledgements
+I didn't invent any of this stuff, I'm just putting the pieces together. The images come from the JMA's http://www.jma-net.go.jp/msc/en/support/index.html[Himawari-8] satellite, processed to true color by Steve Miller and Dan Lindsey at http://rammb.cira.colostate.edu/ramsdis/online/himawari-8.asp[NOAA/CIRA/RAMMB(/CSU/NESDIS/USA...)]. Motion interpolation is accomplished with the open source https://github.com/dthpham/butterflow)[Butterflow tool by dthpham], which uses http://docs.opencv.org/master/d7/d8b/tutorial_py_lucas_kanade.html#gsc.tab=0[OpenCV's implementation] of an http://www.diva-portal.org/smash/get/diva2:273847/FULLTEXT01.pdf[algorithm devised by Gunnar Farnebäck].
+
+== Purpose
+The primary purpose of this project is to share the awe-inspiring images of Earth created by the Himawari-8 AHI and the NOAA/CIRA/RAMMB team; thusly, these videos are optimized for aesthetic beauty rather than scientific utility. However, it also aims to encourage discussion and experimentation around the wider use of motion interpolation in scientific visualization and image processing.
+
+== Process
+The process implemented by these scripts, described in detail in the Scripts section below, is essentially:
+
+. *scrape.js* - Retrieves new high-resolution true color Himawari-8 images from the http://rammb.cira.colostate.edu/ramsdis/online/himawari-8.asp[CSU/RAMMB webpage] and saves them locally.
+. *main.js* - The main image processing pipeline, which does the following:
+.. Splits the list of images into day-long sessions.
+.. Makes cropped copies of the full-sized images for different regions & sessions.
+.. Combines the cropped images into low-framerate video files.
+.. Parses image timestamps to identify gaps between images that are > the expected 10 minute interval.
+.. Generates and runs a command for Butterflow to produce a high-framerate, motion-interpolated video which corrects for imaging gaps by interpolating additional frames.
+.. Compresses and saves the video as a local .mp4 file.
+. *youtube.js* - Automatically updates the project's Youtube channel by creating playlists for each product and uploading newly created videos via the Youtube Data API.
+
+= Butterflow
+The project's main dependency is Butterflow
+
+Butterflow supports Mac OS X, Ubuntu 15.04 (Vivid Vervet), Debian 8.2 (Jessie), and Arch Linux
+
+== Mac OS X
+The current version of Butterflow seems to be most stable/reliable and easiest to set up on OS X, if you have a https://support.apple.com/en-us/HT202823[recent Mac computer that supports OpenCL]. An older version can be installed https://github.com/dthpham/butterflow#os-x[with Homebrew + this one-liner] - *however, at the time of writing, the published version of butterflow on Homebrew contains a https://github.com/dthpham/butterflow/issues/13[bug which results in uninterpolated gaps between video segments].* For this reason, I recommend that you install it from a more recent version of the source, *unless* you plan to just use butterflow without these scripts, for simple interpolation of existing videos without any missing frames to account for.
+
+https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#os-x[To install from source on OS X, just follow these instructions.] You will need to http://brew.sh/[install Homebrew first] if you don't already have it. Note that the last few commands in that list must be re-entered any time you open a new terminal session or reboot, in order to use the source version instead of the global version:
+
+```
+cd butterflow
+source bin/activate
+echo "$(brew --prefix)/lib/python2.7/site-packages" > lib/python2.7/site-packages/butterflow.pth
+python setup.py develop
+```
+
+== Ubuntu Linux
+I have also gotten Butterflow installed from source on Ubuntu 15.04. It may not work on versions older than this due to lack of support for FFmpeg. *At the time of writing, I am getting degraded performance on Ubuntu + a NVidia GPU (20x slower vs. comparable Mac), which others may or may not experience.* I'm working with the developer to debug this.  https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#ubuntu[The Ubuntu install instructions are here]. If you're using a NVidia graphics card, you may also have to https://github.com/dthpham/butterflow/issues/6#issuecomment-141585235[install these extra dependencies] and https://github.com/dthpham/butterflow/issues/6#issuecomment-141722016[perform these steps].
+
+== Other Linuxi
+dthpham (Butterflow developer) also provides instructions for installation on https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#debian[Debian] and https://github.com/dthpham/butterflow/wiki/Install-From-Source-Guide#arch-linux[Arch Linux], which I have not tried. Other Linux distributions may also work similarly; the main dependencies to install are Python, OpenCV, OpenCL and FFmpeg.
+
+== Playing with Butterflow
+Once you have installed Butterflow, make sure it's working by running `butterflow --version` and `butterflow -d`. Now you can slow down an existing video and interpolate it to 60 FPS by running a command like:
+```
+butterflow -s full,spd=0.5 -r 60 -o output.mp4 input.mp4
+```
+If you don't have an mp4 lying around, you can make one from an animated gif using ffmpeg (which is already installed as a Butterflow dependency):
+```
+ffmpeg -i input.gif output.mp4
+```
+https://github.com/dthpham/butterflow/wiki/Example-Usage[More example Butterflow usage is shown on the wiki], and additional command parameters can be discovered by running `butterflow -h`.
+
+= Project Scripts
+info coming soon...
+```
+git clone https://github.com/dandelany/animate-earth.git
+cd animate-earth
+npm install
+npm install -g babel
+```
+== scrape.js
+== main.js
+== youtube.js
+
+= Appendix: useful commands
+
+```
+# interpolate video with butterflow
+butterflow -s full,spd=0.5 -r 60 -o output.mp4 input.mp4
+
+# make video from frames
+ffmpeg -framerate 30 -pattern_type glob -i './*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p output.mp4
+
+# extract frames from video
+ffmpeg -i input.mp4 -r 30 -f image2 img/f%3d.png
+
+# get info about video
+ffprobe input.mp4
+
+# small animated gif from video
+ffmpeg -i 30-interp.mp4 -pix_fmt rgb24 -s 320x240 output.gif
+
+# video from animated gif
+ffmpeg -i input.gif output.mp4
+
+# side by side video comparison of two videos
+# A left side vs A left side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[bg]; [1:v]setpts=PTS-STARTPTS[fg]; [bg][fg]overlay=w/2" output.mp4
+
+# A right side vs B right side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[l]; [1:v]setpts=PTS-STARTPTS[r]; [l]crop=iw/2:ih:iw/2:0[l]; [r][l]overlay=0" output.mp4
+
+# A left side vs B right side
+ffmpeg -i inputA.mp4 -i inputB.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[l]; [1:v]setpts=PTS-STARTPTS[r]; [l]crop=iw/2:ih:0:0[l]; [r][l]overlay=0" output.mp4
+
+```
