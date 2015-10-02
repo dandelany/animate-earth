@@ -19,7 +19,17 @@ I didn't invent any of this stuff, I'm just putting the pieces together. The ima
 The primary purpose of this project is to share the awe-inspiring images of Earth created by the Himawari-8 AHI and the NOAA/CIRA/RAMMB team; thusly, these videos are optimized for aesthetic beauty rather than scientific utility. However, it also aims to encourage discussion and experimentation around the wider use of motion interpolation in scientific visualization and image processing.
 
 == Process
-The overall process 
+The overall process implemented by these scripts is essentially:
+
+. *scrape.js* - Retrieves new high-resolution true color Himawari-8 images from the http://rammb.cira.colostate.edu/ramsdis/online/himawari-8.asp[CSU/RAMMB webpage] and saves them locally.
+. *main.js* - The main image processing pipeline, which does the following:
+.. Splits the list of images into day-long sessions.
+.. Makes cropped copies of the full-sized images for different regions & sessions.
+.. Combines the cropped images into low-framerate video files.
+.. Parses the timestamps of the images to identify gaps between image times that are > the expected 10 minute image interval.
+.. Generates and runs a command for Butterflow to produce a high-framerate motion interpolated video which corrects for imaging gaps by interpolating additional frames.
+.. Compresses and saves the video as a local .mp4 file.
+. *youtube.js* - Automatically updates the project's Youtube channel by creating playlists for each product and uploading newly created videos via the Youtube Data API.
 
 = Butterflow
 The project's main dependency is Butterflow
