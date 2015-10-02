@@ -8,7 +8,7 @@ Dan Delany <dan.delany@gmail.com>
 toc::[]
 
 = Overview
-This repository is an experiment in applying optical-flow-based motion interpolation to pre-processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. https://www.youtube.com/channel/UC6Mlo4zfmEITcNoCpBKfEfg/playlists[The final products can be found on this Youtube channel], updated nearly daily.
+This repository is an experiment in applying optical-flow-based motion interpolation to processed RGB satellite imagery from Himawari-8's AHI imager, with the aim of regularly producing high-quality smoothed videos from these images, and sharing them with the world. https://www.youtube.com/channel/UC6Mlo4zfmEITcNoCpBKfEfg/playlists[The final products can be found on this Youtube channel], updated nearly daily.
 
 == Acknowledgements
 I didn't invent any of this stuff, I'm just putting the pieces together. The images come from the JMA's http://www.jma-net.go.jp/msc/en/support/index.html[Himawari-8] satellite, processed to true color by Steve Miller and Dan Lindsey at http://rammb.cira.colostate.edu/ramsdis/online/himawari-8.asp[NOAA/CIRA/RAMMB(/CSU/NESDIS/USA...)]. Motion interpolation is accomplished with the open source https://github.com/dthpham/butterflow)[Butterflow tool by dthpham], which uses http://docs.opencv.org/master/d7/d8b/tutorial_py_lucas_kanade.html#gsc.tab=0[OpenCV's implementation] of an http://www.diva-portal.org/smash/get/diva2:273847/FULLTEXT01.pdf[algorithm devised by Gunnar Farnebäck].
