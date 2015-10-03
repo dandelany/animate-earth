@@ -15,12 +15,12 @@ export default {
     // path containing full-size retrieved jpgs
     //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
      imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
-    // imgPath: '../testimg',
+     //imgPath: '../testimg',
 
     // output path for finished video & cropped images
     //outPath: '/media/dan/Galactica/earth/output-old2', // linux
     outPath: '/Volumes/Galactica/earth/output', // os x
-    // outPath: '../testout',
+     //outPath: '../testout',
 
     // expected time between images, in seconds. 10 minutes for himawari-8
     imgInterval: 60 * 10,
@@ -51,7 +51,7 @@ export default {
         "1080p highly recommended!",
         "Images of ${product.title} taken every 10 minutes on ${date} from the Himawari 8 spacecraft.",
         "Video motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.",
-        "Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB."
+        "Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB/CSU/CIRA."
     ].join("\n"),
     
     // common tags for all videos
@@ -62,7 +62,7 @@ export default {
     ],
 
     // description template for playlists
-    playlistDescription: 'Daily interpolated Himawari-8 satellite images of <TITLE>.',
+    playlistDescription: 'Daily interpolated Himawari-8 satellite images of <TITLE>. Images courtesy of JMA/NOAA/CSU/CIRA.',
     // common tags for the youtube playlists
     playlistTags: [],
 
@@ -97,7 +97,7 @@ export default {
         // {
         //     id: 'TEST',
         //     title: 'Test patch',
-        //     crop: '640x480+2558+927'
+        //     crop: '400x400+2558+927'
         // }
     ]
 };
