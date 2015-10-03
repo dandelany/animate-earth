@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import fs from 'fs';
-import Lien from 'lien';
 import express from 'express';
 import opn from 'opn';
 import sh from 'shelljs';
@@ -206,7 +205,7 @@ function addVideoToPlaylist(videoId, playlistId, callback, {position}={}) {
     // add an existing video to an existing playlist via Youtube api
     Youtube.playlistItems.insert({
         part: 'snippet,id',
-        resource: {snippet: {resourceId: {kind: 'youtube#video', videoId}, playlistId}}
+        resource: {snippet: {resourceId: {kind: 'youtube#video', videoId}, playlistId, position: 0}}
     }, callback);
 }
 
