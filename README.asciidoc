@@ -83,7 +83,10 @@ babel-node <filename>.js
 === main.js
 === youtube.js
 
-= Results and Discussion
+= Results 
+
+= Discussion & Improvements
+OPTFLOW_USE_INITIAL_FLOW + machine learning model?
 
 = Appendix: useful commands
 
