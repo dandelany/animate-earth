@@ -27,12 +27,16 @@ const scrapeSleep = 0;
 
 const ftp = new JSFtp({host: ftpHost});
 
+const crops = ['2048x1024+0+0'];
+
 function main(callback) {
     const q = queue({concurrency: 1});
     q.push(
-        cb => retrieveImages(cb),
-        cb => resizeImages(cb),
-        cb => makeVideos(cb),
+        //cb => retrieveImages(cb),
+        //cb => resizeImages(cb),
+        cb => cropImages(crops, cb),
+        cb => makeCroppedVideos(crops, cb),
+        //cb => makeVideos(cb),
         cb => { console.log('all done!'); cb(); }
     );
     q.start(callback);
@@ -76,7 +80,7 @@ function resizeImages(callback) {
     // have to downscale the images so butterflow doesn't explode
     const scale = '50%';
     const scaledDir = `${imgPath}/${scale}`;
-    const mogrifyCmd = `mogrify -path ${scaledDir} -resize ${scale} ${imgPath}/*.jpg`;
+    const mogrifyCmd = `mogrify -path ${scaledDir} -resize ${scale} ${imgPath}/100%/*.jpg`;
     ensureDir(scaledDir);
     const isJpg = name => name.indexOf('.jpg') > -1;
     const hasResized = (sh.ls(imgPath).filter(isJpg).length === sh.ls(scaledDir).filter(isJpg).length);
@@ -85,14 +89,41 @@ function resizeImages(callback) {
     callback();
 }
 
+function cropImages(crops, callback) {
+    crops.forEach(cropCoords => {
+        const rawDir = `${imgPath}/100%`;
+        const cropDir = `${imgPath}/${cropCoords}`;
+        const mogrifyCmd = `mogrify -path ${cropDir} -crop ${cropCoords} ${rawDir}/*.jpg`;
+        const isJpg = name => name.indexOf('.jpg') > -1;
+        ensureDir(cropDir);
+        const hasCropped = (sh.ls(rawDir).filter(isJpg).length === sh.ls(cropDir).filter(isJpg).length);
+        if(!hasCropped) execAndLog(mogrifyCmd, true, 'mogrify crop');
+        else console.log(`already have images cropped at ${cropCoords}`);
+    });
+    callback();
+}
+
 function makeVideos(callback) {
-    const scale = '50%';
+    const scale = '100%';
     const scaledDir = `${imgPath}/${scale}`;
     const videoDir = `${imgPath}/video`;
     ensureDir(videoDir);
     sh.exec(makeVideoCmd(scaledDir, 4, `${videoDir}/orig-4fps.mp4`), true, 'make video');
 
     sh.exec(`butterflow -s full,spd=1 -r 60 -o ${videoDir}/interpolated.mp4 ${videoDir}/orig-4fps.mp4`);
+    callback();
+}
+
+function makeCroppedVideos(crops, callback) {
+    crops.forEach(cropCoords => {
+        const cropDir = `${imgPath}/${cropCoords}`;
+        const videoDir = `${imgPath}/video/${cropCoords}`;
+        ensureDir(videoDir);
+        const hasVideo = fileExists(`${videoDir}/interpolated.mp4`);
+        if(hasVideo) { console.log(`already have video for ${cropCoords}`); return; }
+        sh.exec(makeVideoCmd(cropDir, 4, `${videoDir}/orig-4fps.mp4`), true, 'make video');
+        sh.exec(`butterflow -s full,spd=1 -r 60 -o ${videoDir}/interpolated.mp4 ${videoDir}/orig-4fps.mp4`);
+    });
     callback();
 }
 
