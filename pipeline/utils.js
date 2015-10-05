@@ -80,8 +80,8 @@ export function makeVideoCmd(imgDir, fps, videoPath) {
             -c:v libx264 -preset ultrafast -qp 0 -r ${fps} -pix_fmt yuv420p ${videoPath}`;
 }
 
-export function makeCompressVideoCmd(inPath, outPath, {preset='veryslow'} = {}) {
-    return `ffmpeg -y -i ${inPath} -preset ${preset} ${outPath}`;
+export function makeCompressVideoCmd(inPath, outPath, {preset='veryslow', crf='21', encoder='libx264'} = {}) {
+    return `ffmpeg -y -i ${inPath} -c:v ${encoder} -crf ${crf} -preset ${preset} ${outPath}`;
 }
 
 export function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
@@ -107,5 +107,5 @@ export function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
 
     //return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
     //return [`butterflow -l -v --no-preview -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
-    return [`butterflow -l -v -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    return [`butterflow -v -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
 }

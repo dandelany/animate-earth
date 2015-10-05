@@ -27,8 +27,8 @@ request(indexURI, (error, response, body) => {
     console.log(`limited to last ${scrapeLimit} images`);
 
     const imgURIsToSave = _(imgURIs)
-        .take(scrapeLimit) // limit to maximum #
         .reject(imgFileExistsForURI) // don't save images that exist
+        .take(scrapeLimit) // limit to maximum #
         .value();
 
     console.log(`${imgURIsToSave.length} new images to download`);

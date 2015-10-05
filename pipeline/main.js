@@ -24,7 +24,17 @@ const files = sh.ls(`${imgPath}/*.jpg`);
 const sessions = sessionsFromFiles(files, imgInterval, maxFrameGap);
 assert.equal(files.length, _.reduce(sessions, (total, session) => total + session.files.length, 0));
 
-const sessionsToRun = _.take(sessions.reverse(), maxSessions);
+const sessionsToRun = _(sessions)
+    .reverse()
+    .filter(session => { // filter out sessions < 15 hours long
+        const startDate = parseTimeStr(timeStrFromPath(_.first(session.files)));
+        const endDate = parseTimeStr(timeStrFromPath(_.last(session.files)));
+        const sessionHours = endDate.diff(startDate, 'hours');
+        if(sessionHours < 15) console.log(startDate.format('YYYY-MM-DD'), 'session too short,', sessionHours, 'hours');
+        return (sessionHours >= 15);
+    })
+    .take(maxSessions)
+    .value();
 
 sessionsToRun.forEach((session, i) => {
     const dirName = `${timeStrFromPath(_.first(session.files))}-${timeStrFromPath(_.last(session.files))}`;
@@ -38,7 +48,7 @@ sessionsToRun.forEach((session, i) => {
         const videoDir = `${cropDir}/video`;
         const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
         const origCompressedPath = `${videoDir}/original-${origFPS}fps.mp4`;
-        const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
+        // const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
         const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
 
         ensureDir(cropDir);
@@ -60,13 +70,13 @@ sessionsToRun.forEach((session, i) => {
         execAndLog(makeVideoCmd(imgDir, origFPS, origVideoPath), true, 'original video');
 
         // use butterflow to interpolate original video to smooth lossless video
-        if(fileExists(interpVideoPath)) sh.rm(interpVideoPath);
+        // if(fileExists(interpVideoPath)) sh.rm(interpVideoPath);
         execAndLog(
-            makeButterflowCmd(origVideoPath, interpVideoPath, session.files, speed, origFPS, finalFPS),
+            makeButterflowCmd(origVideoPath, interpCompressedPath, session.files, speed, origFPS, finalFPS),
         true, 'butterflow');
 
         // compress/encode the interpolated video
-        execAndLog(makeCompressVideoCmd(interpVideoPath, interpCompressedPath), true, 'compression');
+        // execAndLog(makeCompressVideoCmd(interpVideoPath, interpCompressedPath), true, 'compression');
         // compress/encode the original video
         if(fileExists(origCompressedPath)) sh.rm(origCompressedPath);
         execAndLog(makeCompressVideoCmd(origVideoPath, origCompressedPath), true, 'compression');
@@ -76,6 +86,6 @@ sessionsToRun.forEach((session, i) => {
         console.log('removing images & lossless files...');
         sh.rm('-rf', imgDir);
         sh.rm(origVideoPath);
-        sh.rm(interpVideoPath);
+        // sh.rm(interpVideoPath);
     });
 });

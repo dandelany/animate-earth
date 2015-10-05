@@ -10,3 +10,5 @@ dscovrgif/
 pipeline/secret/
 testimg/
 testout/
+pipeline/output.log
+output.log

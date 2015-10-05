@@ -10,16 +10,16 @@ export default {
     // max total number of images to save
     //scrapeLimit: 5000,
     // scrapeLimit: 5,
-    scrapeLimit: 2000000,
+    scrapeLimit: 200000,
 
     // path containing full-size retrieved jpgs
-    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
-     imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
+    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+     // imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
      //imgPath: '../testimg',
 
     // output path for finished video & cropped images
-    //outPath: '/media/dan/Galactica/earth/output-old2', // linux
-    outPath: '/Volumes/Galactica/earth/output', // os x
+    outPath: '/media/dan/Galactica/earth/output', // linux
+    // outPath: '/Volumes/Galactica/earth/output', // os x
      //outPath: '../testout',
 
     // expected time between images, in seconds. 10 minutes for himawari-8
@@ -41,7 +41,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 10,
+    maxSessions: 500,
 
     projectTitle: "Earth From Space",
 
@@ -52,7 +52,7 @@ export default {
         "Images of ${product.title} taken every 10 minutes on ${date} from the Himawari 8 spacecraft.",
         "Video motion interpolated (smoothed) to 60 FPS using dthpham's Butterflow library.",
         "Images courtesy of Japanese Meteorological Agency/NOAA/RAMMB/CSU/CIRA."
-    ].join("\n"),
+    ].join(" "),
     
     // common tags for all videos
     videoTags: [
