@@ -1,10 +1,17 @@
 import _ from 'lodash';
 import moment from 'moment';
 import sh from 'shelljs';
+import os from 'os';
 
 export function fileExists(path) { return sh.test('-f', path); }
 export function dirExists(path) { return sh.test('-d', path); }
-export function ensureDir(path) { if(!dirExists(path)) sh.mkdir(path); }
+export function ensureDir(path) {
+    if(!dirExists(path)) sh.mkdir('-p', path);
+}
+
+export function getOS() {
+    return os.type();
+}
 
 export function absoluteURI(baseURI, relativeURI) { return `${baseURI}/${relativeURI}`; }
 export function fileNameFromURI(url) { return _.last(url.split('/')); }
@@ -73,6 +80,10 @@ export function sessionsFromFiles(files, interval, maxGap) {
     // mostly happens at night between local days (data source is missing ~8 hrs of data / day)
     const sessions = makeSessions(files, gaps, maxGap);
     return sessions;
+}
+
+export function wget(uri, savePath) {
+    return `wget -O ${savePath} ${uri}`;
 }
 
 export function makeVideoCmd(imgDir, fps, videoPath) {

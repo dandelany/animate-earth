@@ -6,6 +6,7 @@ import cheerio from 'cheerio';
 import sleep from 'sleep';
 
 import {
+    wget,
     baseSrcURI, srcIndexPage,
     scrapeSleep, scrapeLimit,
     imgPath
@@ -39,7 +40,7 @@ request(indexURI, (error, response, body) => {
     // go through each of the image URIs and download them
     imgURIsToSave.forEach((imgURI, i) => {
         // download the image at imgURI
-        execAndLog(makeWgetCmd(imgURI, imgPathFromURI(imgURI)), true, 'download');
+        execAndLog(wget(imgURI, imgPathFromURI(imgURI)), true, 'download');
         console.log(`saved image ${i+1} of ${imgURIsToSave.length}: ${fileNameFromURI(imgURI)}`);
         // sleep before requesting next image
         if(i+1 === imgURIsToSave.length) return;
@@ -60,6 +61,4 @@ function absoluteImgURI(imgURI) { return absoluteURI(baseSrcURI, imgURI); }
 function imgPathFromURI(imgURI) { return `${imgPath}/${fileNameFromURI(imgURI)}`; }
 function imgFileExistsForURI(imgURI) { return fileExists(imgPathFromURI(imgURI)); }
 
-function makeWgetCmd(uri, savePath) {
-    return `wget -O ${savePath} ${uri}`;
-}
+
