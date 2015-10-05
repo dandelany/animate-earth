@@ -24,20 +24,24 @@ import {
 const baseURI = "http://sdo.gsfc.nasa.gov/assets/img/browse";
 
 //const imgPath = '/Volumes/Galactica/earth/img/sdo';
-const imgPath = '../img/sdo';
-const outPath = '../testout/sdo';
+// const imgPath = '../img/sdo';
+const imgPath = '/media/dan/Galactica/earth/img/sdo'
+// const outPath = '../testout/sdo';
+const outPath = '/media/dan/Galactica/earth/output/sdo'
 
 const saveResolution = '4096';
-const saveBands = ['0171'];
-const crops = ['1920x1080+0+2000'];
+const saveBands = ['0131', '0171'];
+// const saveBands = ['0131']
+const crops = ['1920x1080+2096+2200'];
 
 function main(callback) {
     const date = moment.utc('2015-10-01');
     console.log(dayURIFromDate(date));
-    //retrieveSDOImages(baseURI, date, {bands: saveBands, resolution: saveResolution}, () => {
+    // retrieveSDOImages(baseURI, date, {bands: saveBands, resolution: saveResolution}, () => {
     //    cropSDOImages(date, saveBands, crops, outPath);
-    //});
-    //cropSDOImages(date, saveBands, crops, outPath);
+    //    makeSDOVideo(date, saveBands, crops, outPath);
+    // });
+    cropSDOImages(date, saveBands, crops, outPath);
     makeSDOVideo(date, saveBands, crops, outPath);
 }
 main();
@@ -63,7 +67,7 @@ function retrieveSDOImages(baseURI, date, {bands=[], resolution='4096'}, callbac
                 const imgPath = `${bandPath}/${img.fileName}`;
                 if(fileExists(imgPath)) { console.log(`image exists at ${imgPath}`); return; }
                 execAndLog(wget(img.uri, imgPath), true, 'wget');
-                execAndLog(`sleep 3`);
+                execAndLog(`sleep 1`);
             });
         });
         callback();
@@ -84,7 +88,9 @@ function cropSDOImages(date, bands, crops, outPath) {
         crops.forEach(crop => {
             const cropDir = `${outPath}/${dateToPath(date)}/${band}/${crop}/img`;
             console.log(cropDir);
-            const mogrifyCmd = `mogrify -path ${cropDir} -crop ${crop} ${bandPath}/*.jpg`;
+            // const mogrifyCmd = `mogrify -path ${cropDir} -crop ${crop} ${bandPath}/*.jpg`;
+            const mogrifyCmd = `mogrify -path ${cropDir} -crop ${crop} `+
+                `-type Grayscale -contrast-stretch 0 -unsharp 0  ${bandPath}/*.jpg`;
             ensureDir(cropDir);
             execAndLog(mogrifyCmd, true, 'mogrify');
         })
@@ -105,7 +111,7 @@ function makeSDOVideo(date, bands, crops, outPath) {
             if(!dirExists(cropImgDir) || !sh.ls(cropImgDir).length) return;
 
             ensureDir(videoDir);
-            execAndLog(makeVideoCmd(cropImgDir, 4, videoPath), true, 'video creation');
+            execAndLog(makeVideoCmd(cropImgDir, 3, videoPath), true, 'video creation');
             execAndLog(`butterflow -v -s full,spd=1 -r 60 -o ${interpPath} ${videoPath}`);
         })
     })
