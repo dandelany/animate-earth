@@ -6,13 +6,13 @@ import cheerio from 'cheerio';
 import sleep from 'sleep';
 
 import {
-    wget,
     baseSrcURI, srcIndexPage,
     scrapeSleep, scrapeLimit,
     imgPath
 } from './config.js';
 
 import {
+    wget,
     fileExists, absoluteURI, fileNameFromURI,
     execAndLog
 } from './utils.js';
