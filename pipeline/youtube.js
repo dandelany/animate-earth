@@ -24,7 +24,6 @@ makePlaylists();
 function makePlaylists() {
     //const makePlaylistTitle = (product) => `${projectTitle}: ${product.title}`;
     //const makePlaylistDescription = product => `${playlistDescription.replace("<TITLE>", product.title)}`;
-
     authenticateYoutube(credentials, './secret/token.json', (oauth2Client) => {
         const makeTitle = (product) => `${projectTitle}: ${product.title}`;
         const makeDescription = product => `${playlistDescription.replace("<TITLE>", product.title)}`;
@@ -109,8 +108,9 @@ function ensureVideosForProduct(product, playlist, callback) {
         const playlistItems = data.items;
         console.log(`got ${playlistItems.length} items in playlist`);
         const videoIds = _.pluck(playlistItems, 'snippet.resourceId.videoId');
+        console.log(videoIds.length)
         // have to get video information with videos.list because playlistItems doesn't return tags
-        getVideoById(videoIds.join(','), (err, data) => {
+        getVideoById(videoIds, (err, data) => {
             catchErr(err);
             console.log(`got info for ${data.items.length} videos`);
             // video id:x tags contain the sessionId, ie. directory name, eg. '20150920210000-20150921123000'
@@ -171,16 +171,43 @@ function listPlaylists(callback, {part='id,contentDetails,snippet,status'}={}) {
     Youtube.playlists.list({part, mine: true, maxResults: 50}, callback);
 }
 
-function listPlaylistItems(playlistId, callback, {part='id,contentDetails,snippet,status'}={}) {
+function listPlaylistItems(playlistId, callback, 
+        {part='id,contentDetails,snippet,status', pageToken=undefined}={}
+    ) {
+    console.log(part, pageToken)
     callback = callback || catchErr;
     // todo handle > 50 results with pagination
-    Youtube.playlistItems.list({part, playlistId, maxResults: 50}, callback);
+    // Youtube.playlistItems.list({part, playlistId, maxResults: 50}, callback);
+    const options = {part, playlistId, pageToken, maxResults: 50};
+    Youtube.playlistItems.list(options, (err, data) => {
+        if(data.nextPageToken) {
+            catchErr(err);
+            listPlaylistItems(playlistId, (nextErr, nextData) => {
+                catchErr(nextErr);
+                nextData.items = data.items.concat(nextData.items);
+                callback(nextErr, nextData);
+            }, {part, pageToken: data.nextPageToken});
+        } else callback(err, data);
+    });
 }
 
-function getVideoById(videoId, callback, {part='id,contentDetails,snippet,status'}={}) {
+function getVideoById(videoIds, callback, {part='id,contentDetails,snippet,status'}={}) {
+    videoIds = _.isArray(videoIds) ? videoIds : [videoIds];
     callback = callback || catchErr;
-    // todo handle > 50 results with pagination
-    Youtube.videos.list({part, id: videoId, maxResults: 50}, callback);
+
+    const limit = 50
+    // handle > 50 results with pagination
+    Youtube.videos.list({part, id: _.take(videoIds, limit).join(','), maxResults: limit}, (err, data) => {
+        if(videoIds.length <= limit) callback(err, data);
+        else {
+            catchErr(err);
+            getVideoById(_.drop(videoIds, limit), (nextErr, nextData) => {
+                catchErr(err);
+                nextData.items = data.items.concat(nextData.items);
+                callback(nextErr, nextData)
+            }, {part});
+        }
+    });
 }
 
 function updatePlaylist(id, snippet, callback, {privacyStatus='public'}={}) {
