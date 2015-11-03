@@ -7,6 +7,7 @@ import {
     ensureDir, dirExists, fileExists,
     execAndLog, timeStrFromPath, parseTimeStr, niceDate,
     findGaps, makeSessions, sessionsFromFiles,
+    fdupes,
     makeVideoCmd, makeButterflowCmd, makeCompressVideoCmd
 } from './utils.js';
 
@@ -49,7 +50,7 @@ sessionsToRun.forEach((session, i) => {
         const origVideoPath = `${videoDir}/original-${origFPS}fps-lossless.mp4`;
         const origCompressedPath = `${videoDir}/original-${origFPS}fps.mp4`;
         // const interpVideoPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x-lossless.mp4`;
-        const interpCompressedPath = `${videoDir}/interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
+        const interpCompressedPath = `${videoDir}/interpolated-sm2-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
 
         ensureDir(cropDir);
         if(fileExists(interpCompressedPath)) return; // already made this one
@@ -62,6 +63,22 @@ sessionsToRun.forEach((session, i) => {
             console.log(`cropping session ${i+1} of ${sessionsToRun.length}, crop ${j+1} of ${products.length}, ` +
                 `file ${k+1} of ${session.files.length}, ${croppedPath}`);
             execAndLog(`convert '${file}' -crop ${cropCoord} '${croppedPath}'`);
+        });
+
+        // find duplicate image files and remove them (removes all pure black frames)
+        const dupeSets = execAndLog(fdupes(`${imgDir}`))
+            .output.split('\n').filter(s => s.length)
+            .map(s => s.split(' ').filter(d => d = d.length));
+        console.log(`${dupeSets.length} sets of duplicate images`);
+        dupeSets.forEach(dupes => {
+            const fileSize = parseInt(sh.exec(`wc -c ${dupes[0]}`).output.split(' ')[0]);
+            console.log('fileSize', fileSize);
+            if(fileSize < 20000) { // detect pure black images and delete them all
+                dupes.forEach(dupe => execAndLog(`rm ${dupe}`));
+            } else { 
+                // if not all black, keep 1st dupe, ie. dont delete real data in weird cases where we have dupes
+                dupes.splice(1).forEach(dupe => execAndLog(`rm ${dupe}`));
+            }
         });
 
         // make original lossless video from frames

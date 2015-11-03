@@ -6,7 +6,7 @@ export default {
 
     // time, in seconds, for the scraper to sleep between requests
     // (to avoid making too many requests)
-    scrapeSleep: 3,
+    scrapeSleep: 1,
     // max total number of images to save
     //scrapeLimit: 5000,
     // scrapeLimit: 5,
@@ -26,7 +26,7 @@ export default {
     imgInterval: 60 * 10,
 
     // max # of missing frames to try to adjust for via extra interpolation
-    // gaps > than this number of frames will ne split into separate sessions
+    // gaps > than this number of frames will be split into separate sessions
     maxFrameGap: 5,
 
     // desired fps of the intermediate uninterpolated video
@@ -41,7 +41,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 500,
+    maxSessions: 5,
 
     projectTitle: "Earth From Space",
 
@@ -95,9 +95,19 @@ export default {
             crop: '1920x1080+516+754'
         }
         // {
+        //     id: 'DUJUAN',
+        //     title: 'Typhoon Dujuan',
+        //     crop: '1920x1080+1100+950'
+        // }
+        // {
+        //     id: 'GONI-ATSANI',
+        //     title: 'Twin Typhoons Goni and Atsani',
+        //     crop: '1920x1080+2280+1102'
+        // }
+        // {
         //     id: 'TEST',
         //     title: 'Test patch',
-        //     crop: '400x400+2558+927'
+        //     crop: '400x400+2280+1100'
         // }
     ]
 };

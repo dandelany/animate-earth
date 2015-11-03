@@ -86,6 +86,11 @@ export function wget(uri, savePath) {
     return `wget -O ${savePath} ${uri}`;
 }
 
+export function fdupes(dir) {
+    dir = dir || './';
+    return `fdupes -1 -q ${dir}`;
+}
+
 export function makeVideoCmd(imgDir, fps, videoPath) {
     return `ffmpeg -y -framerate ${fps}\ -pattern_type glob -i '${imgDir}/*.jpg'\
             -c:v libx264 -preset ultrafast -qp 0 -r ${fps} -pix_fmt yuv420p ${videoPath}`;
@@ -118,5 +123,5 @@ export function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
 
     //return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
     //return [`butterflow -l -v --no-preview -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
-    return [`butterflow -v -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    return [`butterflow -v -hw --poly-s 0.5 -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
 }
