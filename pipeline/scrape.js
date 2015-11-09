@@ -5,20 +5,25 @@ import request from 'request';
 import cheerio from 'cheerio';
 import sleep from 'sleep';
 
-import {
+import config from './config.js';
+const {
     baseSrcURI, srcIndexPage,
     scrapeSleep, scrapeLimit,
-    imgPath
-} from './config.js';
+    imgPath, tmpPath
+} = config;
 
 import {
     wget,
-    fileExists, absoluteURI, fileNameFromURI,
+    fileExists, ensureDir, absoluteURI, fileNameFromURI,
     execAndLog
 } from './utils.js';
 
 const indexURI = `${baseSrcURI}/${srcIndexPage}`;
 console.log(`checking for new image URLs on ${indexURI}`);
+
+const tmpDir = `${tmpPath}/img`;
+sh.rm('-rf', tmpDir);
+ensureDir(tmpDir);
 
 request(indexURI, (error, response, body) => {
     // find URIs of images linked to from the index page
@@ -40,8 +45,10 @@ request(indexURI, (error, response, body) => {
     // go through each of the image URIs and download them
     imgURIsToSave.forEach((imgURI, i) => {
         // download the image at imgURI
-        execAndLog(wget(imgURI, imgPathFromURI(imgURI)), true, 'download');
+        execAndLog(wget(imgURI, tmpPathFromURI(imgURI)), true, 'download');
+        sh.cp(tmpPathFromURI(imgURI), imgPathFromURI(imgURI));
         console.log(`saved image ${i+1} of ${imgURIsToSave.length}: ${fileNameFromURI(imgURI)}`);
+
         // sleep before requesting next image
         if(i+1 === imgURIsToSave.length) return;
         execAndLog(`sleep ${scrapeSleep}`);
@@ -59,6 +66,7 @@ function imgURIsFromIndexHtml(htmlText, resolution='high') {
 
 function absoluteImgURI(imgURI) { return absoluteURI(baseSrcURI, imgURI); }
 function imgPathFromURI(imgURI) { return `${imgPath}/${fileNameFromURI(imgURI)}`; }
+function tmpPathFromURI(imgURI) { return `${tmpDir}/${fileNameFromURI(imgURI)}`; }
 function imgFileExistsForURI(imgURI) { return fileExists(imgPathFromURI(imgURI)); }
 
 

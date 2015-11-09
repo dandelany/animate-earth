@@ -13,14 +13,16 @@ export default {
     scrapeLimit: 200000,
 
     // path containing full-size retrieved jpgs
-    imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
-     // imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
+    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
+    imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
      //imgPath: '../testimg',
 
     // output path for finished video & cropped images
-    outPath: '/media/dan/Galactica/earth/output', // linux
-    // outPath: '/Volumes/Galactica/earth/output', // os x
+    //outPath: '/media/dan/Galactica/earth/output', // linux
+     outPath: '/Volumes/Galactica/earth/output', // os x
      //outPath: '../testout',
+
+    tmpPath: '/tmp/animate-earth',
 
     // expected time between images, in seconds. 10 minutes for himawari-8
     imgInterval: 60 * 10,
@@ -41,7 +43,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 5,
+    maxSessions: 3,
 
     projectTitle: "Earth From Space",
 
@@ -68,32 +70,48 @@ export default {
 
     // all video products we create
     products: [
+        //{
+        //    id: 'TEST',
+        //    title: 'Japan, Korea, Beijing & Shanghai',
+        //    tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
+        //    // list of crop coordinates for the cropped videos we're creating
+        //    // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
+        //    crop: '420x240+1558+327',
+        //    startTime: '20:00:00Z',
+        //    endTime: '09:30:00Z',
+        //    startDate: '2015-10-13',
+        //    endDate: '2015-10-13'
+        //},
         {
             id: 'A',
             title: 'Japan, Korea, Beijing & Shanghai',
             tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
             // list of crop coordinates for the cropped videos we're creating
             // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
-            crop: '1920x1080+1558+327'
+            crop: '1920x1080+1558+327',
+            startTime: '20:00:00Z',
+            endTime: '09:30:00Z',
+            startDate: '2015-10-14',
+            endDate: '2015-10-31'
         },
-        {
-            id: 'B',
-            title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
-            tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
-            crop: '1920x1080+265+1675'
-        },
-        {
-            id: 'C',
-            title: 'Indonesia, Malaysia & Singapore',
-            tags: ['Indonesia', 'Malaysia', 'Singapore'],
-            crop: '1920x1080+540+2310'
-        },
-        {
-            id: 'D',
-            title: 'Eastern China, Taiwan & Korea',
-            tags: ['China', 'Taiwan', 'Korea'],
-            crop: '1920x1080+516+754'
-        }
+        //{
+        //    id: 'B',
+        //    title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+        //    tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+        //    crop: '1920x1080+265+1675'
+        //},
+        //{
+        //    id: 'C',
+        //    title: 'Indonesia, Malaysia & Singapore',
+        //    tags: ['Indonesia', 'Malaysia', 'Singapore'],
+        //    crop: '1920x1080+540+2310'
+        //},
+        //{
+        //    id: 'D',
+        //    title: 'Eastern China, Taiwan & Korea',
+        //    tags: ['China', 'Taiwan', 'Korea'],
+        //    crop: '1920x1080+516+754'
+        //}
         // {
         //     id: 'DUJUAN',
         //     title: 'Typhoon Dujuan',

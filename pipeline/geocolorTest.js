@@ -39,7 +39,7 @@ function doThenCallback(func) {
 function main(callback) {
     const q = queue({concurrency: 1});
     q.push(
-        // cb => retrieveImages(cb),
+        //cb => retrieveImages(cb),
         doThenCallback(() => makeVideos(`${imgPath}/japan/100%`, `${imgPath}/japan/video`)),
         doThenCallback(() => makeVideos(`${imgPath}/korea/100%`, `${imgPath}/korea/video`)),
 
@@ -125,8 +125,8 @@ function makeVideos(imgDir, videoDir) {
 
     ensureDir(videoDir);
     execAndLog(makeVideoCmd(imgDir, 4, origPath), true, 'make video');
-    execAndLog(`butterflow -l -v -hw --poly-s 0.8 -s full,spd=1 -r 60 -o ${interpPath} ${origPath}`);
-    execAndLog(makeCompressVideoCmd(interpPath, compressedPath, {preset: 'ultrafast'}));
+    execAndLog(`butterflow -l -v --poly-s 0.9 -s full,spd=1 -r 60 -o ${interpPath} ${origPath}`);
+    execAndLog(makeCompressVideoCmd(interpPath, compressedPath, {preset: 'veryslow'}));
     sh.rm(interpPath);
 }
 
