@@ -9,11 +9,12 @@ const {OAuth2} = Google.auth;
 
 import {fileExists} from './utils.js';
 import credentials from "./secret/credentials.json";
-import {
+import config from './config.js';
+const {
     products,
     projectTitle, playlistDescription, videoTitle, videoDescription, videoTags,
     outPath, origFPS, finalFPS, speed
-} from './config.js';
+} = config;
 import {parseTimeStr, niceDate} from './utils.js';
 
 // shared Youtube singleton
@@ -115,11 +116,11 @@ function ensureVideosForProduct(product, playlist, callback) {
             console.log(`got info for ${data.items.length} videos`);
             // video id:x tags contain the sessionId, ie. directory name, eg. '20150920210000-20150921123000'
             const videosBySessionId = _.omit(_.indexBy(data.items, getIdFromTag), null);
-            const sessionDirs = sh.ls(outPath);
+            const sessionDirs = sh.ls(`${outPath}/${product.id}`);
 
             sessionDirs.forEach(sessionId => {
                 const videoFileName = `interpolated-${origFPS}-${finalFPS}fps-${speed}x.mp4`;
-                const videoPath = `${outPath}/${sessionId}/${product.crop}/video/${videoFileName}`;
+                const videoPath = `${outPath}/${product.id}/${sessionId}/video/${videoFileName}`;
                 if(fileExists(videoPath) && !videosBySessionId[sessionId]) {
                     // file exists for this product, and video is not in playlist, so upload it
                     q.push(function(next) {

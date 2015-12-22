@@ -123,5 +123,5 @@ export function makeButterflowCmd(inPath, outPath, files, speed, inFPS, outFPS){
 
     //return [`butterflow -l -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
     //return [`butterflow -l -v --no-preview -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
-    return [`butterflow -v --poly-s 0.9 -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
+    return [`butterflow -v -hw --poly-s 0.9 -r ${outFPS} -o ${outPath} -s `].concat(segments).concat(` ${inPath}`).join('');
 }

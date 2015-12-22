@@ -35,6 +35,7 @@ request(indexURI, (error, response, body) => {
     const imgURIsToSave = _(imgURIs)
         .reject(imgFileExistsForURI) // don't save images that exist
         .take(scrapeLimit) // limit to maximum #
+        .reverse() // oldest first
         .value();
 
     console.log(`${imgURIsToSave.length} new images to download`);

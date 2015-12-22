@@ -1,4 +1,7 @@
-export default {
+
+
+
+const config = {
     // base URI of the remote data source from which we retrieve images
     baseSrcURI: 'http://rammb.cira.colostate.edu/ramsdis/online',
     // sub-URI of the index page which contains links to all of the image files
@@ -13,13 +16,13 @@ export default {
     scrapeLimit: 200000,
 
     // path containing full-size retrieved jpgs
-    //imgPath: '/media/dan/Galactica/earth/img/full-disk-true-color/high', // linux
-    imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
+    imgPath: '/media/dan/TARDIS/earth/img/full-disk-true-color/high', // linux
+    // imgPath: '/Volumes/Galactica/earth/img/full-disk-true-color/high', // os x
      //imgPath: '../testimg',
 
     // output path for finished video & cropped images
-    //outPath: '/media/dan/Galactica/earth/output', // linux
-     outPath: '/Volumes/Galactica/earth/output', // os x
+    outPath: '/media/dan/TARDIS/earth/output', // linux
+     // outPath: '/Volumes/Galactica/earth/output', // os x
      //outPath: '../testout',
 
     tmpPath: '/tmp/animate-earth',
@@ -43,7 +46,7 @@ export default {
     finalFPS: 60,
 
     // limit max # of sessions (days) to make video from, starting from most recent
-    maxSessions: 3,
+    maxSessions: 30,
 
     projectTitle: "Earth From Space",
 
@@ -82,6 +85,18 @@ export default {
         //    startDate: '2015-10-13',
         //    endDate: '2015-10-13'
         //},
+        // {
+        //     id: 'FULLTEST',
+        //     title: 'Japan, Korea, Beijing & Shanghai',
+        //     tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
+        //     // list of crop coordinates for the cropped videos we're creating
+        //     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
+        //     crop: '3840x1080+0+0',
+        //     startTime: '20:00:00Z',
+        //     endTime: '21:00:00Z',
+        //     startDate: '2015-11-12',
+        //     endDate: '2015-11-12'
+        // },
         {
             id: 'A',
             title: 'Japan, Korea, Beijing & Shanghai',
@@ -90,28 +105,82 @@ export default {
             // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
             crop: '1920x1080+1558+327',
             startTime: '20:00:00Z',
-            endTime: '09:30:00Z',
-            startDate: '2015-10-14',
-            endDate: '2015-10-31'
+            endTime: '20:00:00Z',
+            startDate: '2015-11-12',
+            endDate: '2015-11-21'
         },
-        //{
-        //    id: 'B',
-        //    title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
-        //    tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
-        //    crop: '1920x1080+265+1675'
-        //},
-        //{
-        //    id: 'C',
-        //    title: 'Indonesia, Malaysia & Singapore',
-        //    tags: ['Indonesia', 'Malaysia', 'Singapore'],
-        //    crop: '1920x1080+540+2310'
-        //},
-        //{
-        //    id: 'D',
-        //    title: 'Eastern China, Taiwan & Korea',
-        //    tags: ['China', 'Taiwan', 'Korea'],
-        //    crop: '1920x1080+516+754'
-        //}
+        // {
+        //     id: 'A_OLD',
+        //     title: 'Japan, Korea, Beijing & Shanghai',
+        //     tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
+        //     // list of crop coordinates for the cropped videos we're creating
+        //     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
+        //     crop: '1920x1080+1558+327',
+        //     startTime: '20:00:00Z',
+        //     endTime: '09:30:00Z',
+        //     startDate: '2015-10-13',
+        //     endDate: '2015-11-11'
+        // },
+        {
+            id: 'B',
+            title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+            tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+            crop: '1920x1080+265+1675',
+            startTime: '22:00:00Z',
+            endTime: '22:00:00Z',
+            startDate: '2015-11-12',
+            endDate: '2015-11-21'
+        },
+        // {
+        //     id: 'B_OLD',
+        //     title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+        //     tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+        //     crop: '1920x1080+265+1675',
+        //     startTime: '21:20:00Z',
+        //     endTime: '12:10:00Z',
+        //     startDate: '2015-10-14',
+        //     endDate: '2015-11-11'
+        // },
+        {
+            id: 'C',
+            title: 'Indonesia, Malaysia & Singapore',
+            tags: ['Indonesia', 'Malaysia', 'Singapore'],
+            crop: '1920x1080+540+2310',
+            startTime: '22:00:00Z',
+            endTime: '22:00:00Z',
+            startDate: '2015-11-12',
+            endDate: '2015-11-21'
+        },
+        // {
+        //     id: 'C_OLD',
+        //     title: 'Indonesia, Malaysia & Singapore',
+        //     tags: ['Indonesia', 'Malaysia', 'Singapore'],
+        //     crop: '1920x1080+540+2310',
+        //     startTime: '21:00:00Z',
+        //     endTime: '11:10:00Z',
+        //     startDate: '2015-10-14',
+        //     endDate: '2015-11-11'
+        // },
+        {
+            id: 'D',
+            title: 'Eastern China, Taiwan & Korea',
+            tags: ['China', 'Taiwan', 'Korea'],
+            crop: '1920x1080+516+754',
+            startTime: '22:00:00Z',
+            endTime: '22:00:00Z',
+            startDate: '2015-11-12',
+            endDate: '2015-11-21'
+        }
+        // {
+        //     id: 'D',
+        //     title: 'Eastern China, Taiwan & Korea',
+        //     tags: ['China', 'Taiwan', 'Korea'],
+        //     crop: '1920x1080+516+754',
+        //     startTime: '21:10:00Z',
+        //     endTime: '12:10:00Z',
+        //     startDate: '2015-10-14',
+        //     endDate: '2015-11-11'
+        // }
         // {
         //     id: 'DUJUAN',
         //     title: 'Typhoon Dujuan',
@@ -130,7 +199,7 @@ export default {
     ]
 };
 
-
+export default config;
 
 //const cropCoords = ['800x600+2000+200', '800x600+3000+1000'];
 //const cropCoords = ['2800x1576+1100+3260']; // australia - too big...

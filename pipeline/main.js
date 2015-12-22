@@ -58,7 +58,7 @@ function makeProductSessions(product, files) {
             const fileTime = parseTimeStr(timeStrFromPath(f));
             return dayRange.contains(fileTime);
         });
-        sessions.push(dayFiles);
+        if(dayFiles.length) sessions.push(dayFiles);
         dayStart = dayStart.add(1, 'day');
         if(dayStart.isAfter(endMoment)) isDone = true;
     }
@@ -83,7 +83,10 @@ function runSession(product, i, session, j) {
     ensureDir(tmpDir);
     ensureDir(sessionDir);
 
-    if(fileExists(interpCompressedPath)) return; // already made this one
+    if(fileExists(interpCompressedPath)) {
+        console.log(interpCompressedPath, 'already exists')
+        return; // already made this one
+    }
 
     // make cropped images
     ensureDir(imgDir);
@@ -127,9 +130,11 @@ products.forEach((product, i) => {
         //    return (sessionHours >= 15);
         //});
 
+
+    // console.log(sessions);
+
     sessions.forEach(runSession.bind(this, product, i));
 
-    console.log(sessions);
 });
 
 
