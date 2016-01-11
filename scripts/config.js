@@ -22,3 +22,4 @@ const config = {
         }
     },
 }
+
