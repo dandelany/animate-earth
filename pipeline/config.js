@@ -21,7 +21,7 @@ const config = {
      //imgPath: '../testimg',
 
     // output path for finished video & cropped images
-    outPath: '/media/dan/TARDIS/earth/output', // linux
+    outPath: '/media/dan/TARDIS/earth/output/footage1', // linux
      // outPath: '/Volumes/Galactica/earth/output', // os x
      //outPath: '../testout',
 
@@ -39,8 +39,8 @@ const config = {
 
     // speed by which to slow down the original video
     //speed: 0.666667,
-    // speed: 1,
-    speed: 0.75,
+    speed: 1,
+    // speed: 0.75,
 
     // desired fps of final interpolated video
     finalFPS: 60,
@@ -73,7 +73,7 @@ const config = {
 
     // all video products we create
     products: [
-        //{
+        // {
         //    id: 'TEST',
         //    title: 'Japan, Korea, Beijing & Shanghai',
         //    tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
@@ -84,7 +84,7 @@ const config = {
         //    endTime: '09:30:00Z',
         //    startDate: '2015-10-13',
         //    endDate: '2015-10-13'
-        //},
+        // },
         // {
         //     id: 'FULLTEST',
         //     title: 'Japan, Korea, Beijing & Shanghai',
@@ -97,18 +97,18 @@ const config = {
         //     startDate: '2015-11-12',
         //     endDate: '2015-11-12'
         // },
-        {
-            id: 'A',
-            title: 'Japan, Korea, Beijing & Shanghai',
-            tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
-            // list of crop coordinates for the cropped videos we're creating
-            // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
-            crop: '1920x1080+1558+327',
-            startTime: '20:00:00Z',
-            endTime: '20:00:00Z',
-            startDate: '2015-11-12',
-            endDate: '2015-11-21'
-        },
+        // {
+        //     id: 'A',
+        //     title: 'Japan, Korea, Beijing & Shanghai',
+        //     tags: ['Japan', 'Korea', 'Beijing', 'Shanghai'],
+        //     // list of crop coordinates for the cropped videos we're creating
+        //     // string format: 'WIDTHxHEIGHT+XOFFSET+YOFFSET'
+        //     crop: '1920x1080+1558+327',
+        //     startTime: '20:00:00Z',
+        //     endTime: '20:00:00Z',
+        //     startDate: '2015-11-12',
+        //     endDate: '2015-11-21'
+        // },
         // {
         //     id: 'A_OLD',
         //     title: 'Japan, Korea, Beijing & Shanghai',
@@ -121,16 +121,16 @@ const config = {
         //     startDate: '2015-10-13',
         //     endDate: '2015-11-11'
         // },
-        {
-            id: 'B',
-            title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
-            tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
-            crop: '1920x1080+265+1675',
-            startTime: '22:00:00Z',
-            endTime: '22:00:00Z',
-            startDate: '2015-11-12',
-            endDate: '2015-11-21'
-        },
+        // {
+        //     id: 'B',
+        //     title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
+        //     tags: ['Thailand', 'Malaysia', 'Singapore', 'Laos', 'Cambodia', 'Vietnam', 'Philippines'],
+        //     crop: '1920x1080+265+1675',
+        //     startTime: '22:00:00Z',
+        //     endTime: '22:00:00Z',
+        //     startDate: '2015-11-12',
+        //     endDate: '2015-11-21'
+        // },
         // {
         //     id: 'B_OLD',
         //     title: 'Thailand, Malaysia, Singapore, Laos, Cambodia, Vietnam, Philippines',
@@ -141,16 +141,16 @@ const config = {
         //     startDate: '2015-10-14',
         //     endDate: '2015-11-11'
         // },
-        {
-            id: 'C',
-            title: 'Indonesia, Malaysia & Singapore',
-            tags: ['Indonesia', 'Malaysia', 'Singapore'],
-            crop: '1920x1080+540+2310',
-            startTime: '22:00:00Z',
-            endTime: '22:00:00Z',
-            startDate: '2015-11-12',
-            endDate: '2015-11-21'
-        },
+        // {
+        //     id: 'C',
+        //     title: 'Indonesia, Malaysia & Singapore',
+        //     tags: ['Indonesia', 'Malaysia', 'Singapore'],
+        //     crop: '1920x1080+540+2310',
+        //     startTime: '22:00:00Z',
+        //     endTime: '22:00:00Z',
+        //     startDate: '2015-11-12',
+        //     endDate: '2015-11-21'
+        // },
         // {
         //     id: 'C_OLD',
         //     title: 'Indonesia, Malaysia & Singapore',
@@ -161,18 +161,18 @@ const config = {
         //     startDate: '2015-10-14',
         //     endDate: '2015-11-11'
         // },
-        {
-            id: 'D',
-            title: 'Eastern China, Taiwan & Korea',
-            tags: ['China', 'Taiwan', 'Korea'],
-            crop: '1920x1080+516+754',
-            startTime: '22:00:00Z',
-            endTime: '22:00:00Z',
-            startDate: '2015-11-12',
-            endDate: '2015-11-21'
-        }
         // {
         //     id: 'D',
+        //     title: 'Eastern China, Taiwan & Korea',
+        //     tags: ['China', 'Taiwan', 'Korea'],
+        //     crop: '1920x1080+516+754',
+        //     startTime: '22:00:00Z',
+        //     endTime: '22:00:00Z',
+        //     startDate: '2015-11-12',
+        //     endDate: '2015-11-21'
+        // }
+        // {
+        //     id: 'D_OLD',
         //     title: 'Eastern China, Taiwan & Korea',
         //     tags: ['China', 'Taiwan', 'Korea'],
         //     crop: '1920x1080+516+754',
@@ -186,11 +186,15 @@ const config = {
         //     title: 'Typhoon Dujuan',
         //     crop: '1920x1080+1100+950'
         // }
-        // {
-        //     id: 'GONI-ATSANI',
-        //     title: 'Twin Typhoons Goni and Atsani',
-        //     crop: '1920x1080+2280+1102'
-        // }
+        {
+            id: 'GONI-ATSANI',
+            title: 'Twin Typhoons Goni and Atsani',
+            crop: '1920x1080+2280+1102',
+            startDate: '2015-08-23',
+            endDate: '2015-08-23',
+            startTime: '21:10:00Z',
+            endTime: '12:10:00Z',
+        }
         // {
         //     id: 'TEST',
         //     title: 'Test patch',
